@@ -1,6 +1,4 @@
-"use client"
-
-import { useTranslations } from "next-intl"
+import { getTranslations } from "next-intl/server"
 import {
   PlaneTakeoff,
   Sailboat,
@@ -8,18 +6,15 @@ import {
   Map,
   CloudSun,
   FileText,
-  Settings,
-  BookOpen,
-  ListChecks,
 } from "lucide-react"
 import { MenuCategory } from "@/components/menu-category"
 import { MenuTile } from "@/components/menu-tile"
 
-export function HomeMenu() {
-  const t = useTranslations("home")
+export default async function HomePage() {
+  const t = await getTranslations("home")
 
   return (
-    <>
+    <div className="space-y-8">
       <MenuCategory title={t("logbook.title")}>
         <MenuTile
           href="/logbook/aeroplane"
@@ -61,27 +56,6 @@ export function HomeMenu() {
           description={t("planning.ofpDesc")}
         />
       </MenuCategory>
-
-      <MenuCategory title={t("management.title")}>
-        <MenuTile
-          href="/settings"
-          icon={Settings}
-          label={t("management.settings")}
-          description={t("management.settingsDesc")}
-        />
-        <MenuTile
-          href="/manual"
-          icon={BookOpen}
-          label={t("management.manual")}
-          description={t("management.manualDesc")}
-        />
-        <MenuTile
-          href="/changelog"
-          icon={ListChecks}
-          label={t("management.changelog")}
-          description={t("management.changelogDesc")}
-        />
-      </MenuCategory>
-    </>
+    </div>
   )
 }

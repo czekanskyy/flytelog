@@ -68,9 +68,34 @@
     },
     "signOut": "Sign out"
   },
+  "nav": {
+    "account": "Account",
+    "admin": "Admin panel",
+    "settings": "Settings",
+    "help": "Help",
+    "changelog": "Changelog",
+    "signOut": "Sign out"
+  },
+  "greetings": {
+    "0": "Hey there, {name}!",
+    "1": "Welcome aboard, {name}!",
+    "2": "Clear skies, {name}!",
+    "3": "Ready for takeoff, {name}?",
+    "4": "Good to see you, {name}!",
+    "5": "Happy landings, {name}!",
+    "6": "Winds are calm, {name}!",
+    "7": "All green, {name}!",
+    "8": "Sky's the limit, {name}!"
+  },
+  "tabs": {
+    "aeroplane": "Aeroplane",
+    "glider": "Glider",
+    "fstd": "FSTD",
+    "route": "Route / Map",
+    "weather": "Weather",
+    "ofp": "OFP"
+  },
   "home": {
-    "greeting": "Hello, {name}",
-    "signOut": "Sign out",
     "logbook": {
       "title": "Logbook",
       "aeroplane": "Aeroplane",

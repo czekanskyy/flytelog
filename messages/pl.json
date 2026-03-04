@@ -68,9 +68,34 @@
     },
     "signOut": "Wyloguj się"
   },
+  "nav": {
+    "account": "Konto",
+    "admin": "Panel admina",
+    "settings": "Ustawienia",
+    "help": "Pomoc",
+    "changelog": "Zmiany",
+    "signOut": "Wyloguj się"
+  },
+  "greetings": {
+    "0": "Hej, {name}!",
+    "1": "Witaj na pokładzie, {name}!",
+    "2": "Czyste niebo, {name}!",
+    "3": "Gotowy do lotu, {name}?",
+    "4": "Miło Cię widzieć, {name}!",
+    "5": "Miękkiego lądowania, {name}!",
+    "6": "Cisza w eterze, {name}!",
+    "7": "Wszystko na zielono, {name}!",
+    "8": "Niebo jest granicą, {name}!"
+  },
+  "tabs": {
+    "aeroplane": "Samolot",
+    "glider": "Szybowiec",
+    "fstd": "FSTD",
+    "route": "Trasa / Mapa",
+    "weather": "Pogoda",
+    "ofp": "OFP"
+  },
   "home": {
-    "greeting": "Cześć, {name}",
-    "signOut": "Wyloguj się",
     "logbook": {
       "title": "Logbook",
       "aeroplane": "Samolot",
