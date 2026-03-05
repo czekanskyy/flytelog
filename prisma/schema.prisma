@@ -65,3 +65,89 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+model Airport {
+  id        String   @id @default(cuid())
+  openaipId String   @unique
+  name      String
+  icaoCode  String?
+  type      Int
+  lat       Float
+  lon       Float
+  elevation Float?
+  country   String   @default("PL")
+  geometry  Json?
+  updatedAt DateTime @updatedAt
+
+  @@index([country])
+  @@index([lat, lon])
+}
+
+model Airspace {
+  id         String   @id @default(cuid())
+  openaipId  String   @unique
+  name       String
+  type       Int
+  icaoClass  Int?
+  upperLimit Float?
+  lowerLimit Float?
+  country    String   @default("PL")
+  geometry   Json
+  updatedAt  DateTime @updatedAt
+
+  @@index([country])
+  @@index([type])
+}
+
+model Navaid {
+  id        String   @id @default(cuid())
+  openaipId String   @unique
+  name      String
+  type      Int
+  frequency String?
+  lat       Float
+  lon       Float
+  elevation Float?
+  country   String   @default("PL")
+  updatedAt DateTime @updatedAt
+
+  @@index([country])
+  @@index([lat, lon])
+}
+
+model Obstacle {
+  id        String   @id @default(cuid())
+  openaipId String   @unique
+  type      Int
+  lat       Float
+  lon       Float
+  elevation Float
+  heightAgl Float
+  country   String   @default("PL")
+  updatedAt DateTime @updatedAt
+
+  @@index([country])
+  @@index([lat, lon])
+}
+
+model ReportingPoint {
+  id        String   @id @default(cuid())
+  openaipId String   @unique
+  name      String
+  type      Int
+  lat       Float
+  lon       Float
+  elevation Float?
+  country   String   @default("PL")
+  updatedAt DateTime @updatedAt
+
+  @@index([country])
+  @@index([lat, lon])
+}
+
+model SyncLog {
+  id           String   @id @default(cuid())
+  syncedAt     DateTime @default(now())
+  itemsUpdated Int
+  source       String
+}

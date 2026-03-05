@@ -1,8 +1,11 @@
 'use client';
 
+import { useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
-
-import { MapSidebar } from '@/components/map-sidebar';
+import { MapSidebar, type LayerState } from '@/components/map-sidebar';
+import { MapClickPanel } from '@/components/route/map-click-panel';
+import { RouteProvider } from '@/components/route/route-context';
+import { useAeroData } from '@/hooks/use-aero-data';
 
 const DynamicWorldMap = dynamic(() => import('@/components/worldmap'), {
   ssr: false,
@@ -16,11 +19,55 @@ const DynamicWorldMap = dynamic(() => import('@/components/worldmap'), {
   ),
 });
 
-export default function RoutePage() {
+function RoutePageInner() {
+  const [layers, setLayers] = useState<LayerState | null>(null);
+  const [clickedPoint, setClickedPoint] = useState<{ lat: number; lon: number } | null>(null);
+  const { data } = useAeroData();
+
+  const handleLayerChange = useCallback((l: LayerState) => setLayers(l), []);
+  const handleMapClick = useCallback((lat: number, lon: number) => setClickedPoint({ lat, lon }), []);
+  const handleClosePanel = useCallback(() => setClickedPoint(null), []);
+
+  const visibleAirspaces =
+    data?.airspaces
+      ?.filter(a => layers?.airspaceTypes[a.type])
+      ?.filter(a => {
+        if (!layers) return true;
+        const [minAlt, maxAlt] = layers.altitudeRange;
+        const lower = a.lowerLimit ?? 0;
+        const upper = a.upperLimit ?? 99999;
+        return lower <= maxAlt && upper >= minAlt;
+      })
+      ?.map(a => ({
+        type: a.type,
+        icaoClass: a.icaoClass,
+        name: a.name,
+        geometry: a.geometry,
+        upperLimit: a.upperLimit,
+        lowerLimit: a.lowerLimit,
+      })) ?? [];
+
   return (
     <div className='fixed inset-0 z-0'>
-      <MapSidebar />
-      <DynamicWorldMap />
+      <MapSidebar onLayerChange={handleLayerChange} />
+      <DynamicWorldMap
+        airspaces={visibleAirspaces}
+        layers={layers}
+        airports={layers?.showAirports ? data?.airports : undefined}
+        navaids={layers?.showNavaids ? data?.navaids : undefined}
+        obstacles={layers?.showObstacles ? data?.obstacles : undefined}
+        onMapClick={handleMapClick}
+        clickedPoint={clickedPoint}
+      />
+      <MapClickPanel clickedPoint={clickedPoint} onClose={handleClosePanel} />
     </div>
+  );
+}
+
+export default function RoutePage() {
+  return (
+    <RouteProvider>
+      <RoutePageInner />
+    </RouteProvider>
   );
 }
