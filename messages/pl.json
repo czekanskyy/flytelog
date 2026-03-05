@@ -1,0 +1,155 @@
+{
+  "auth": {
+    "login": {
+      "title": "Witaj ponownie",
+      "subtitle": "Zaloguj się do swojego konta flyteLog",
+      "loginLabel": "Email lub nazwa użytkownika",
+      "loginPlaceholder": "ty@example.com",
+      "passwordLabel": "Hasło",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Zaloguj się",
+      "submitting": "Logowanie...",
+      "noAccount": "Nie masz konta?",
+      "createOne": "Utwórz je"
+    },
+    "register": {
+      "title": "Utwórz konto",
+      "subtitle": "Dołącz do flyteLog i zarządzaj swoimi lotami",
+      "firstNameLabel": "Imię",
+      "firstNamePlaceholder": "Jan",
+      "lastNameLabel": "Nazwisko",
+      "lastNamePlaceholder": "Nowak",
+      "usernameLabel": "Nazwa użytkownika",
+      "usernamePlaceholder": "jan.nowak",
+      "emailLabel": "Email",
+      "emailPlaceholder": "jan@example.com",
+      "passwordLabel": "Hasło",
+      "passwordPlaceholder": "••••••••",
+      "confirmPasswordLabel": "Potwierdź hasło",
+      "confirmPasswordPlaceholder": "••••••••",
+      "submit": "Utwórz konto",
+      "submitting": "Tworzenie konta...",
+      "hasAccount": "Masz już konto?",
+      "signIn": "Zaloguj się",
+      "successTitle": "Konto utworzone!",
+      "successMessage": "Twoje konto czeka na zatwierdzenie przez administratora. Będziesz mógł się zalogować po potwierdzeniu rejestracji.",
+      "backToLogin": "Wróć do logowania"
+    },
+    "errors": {
+      "notApproved": "Twoje konto oczekuje na zatwierdzenie przez administratora",
+      "expired": "Twoje konto wygasło. Skontaktuj się z administratorem.",
+      "invalidCredentials": "Nieprawidłowy email/nazwa użytkownika lub hasło",
+      "emailTaken": "Ten adres email jest już zajęty",
+      "usernameTaken": "Ta nazwa użytkownika jest już zajęta"
+    }
+  },
+  "admin": {
+    "title": "Zarządzanie użytkownikami",
+    "subtitle": "Zatwierdzaj nowe rejestracje i zarządzaj istniejącymi kontami.",
+    "pending": {
+      "title": "Oczekujące na zatwierdzenie",
+      "empty": "Brak oczekujących rejestracji"
+    },
+    "approved": {
+      "title": "Zatwierdzeni użytkownicy",
+      "empty": "Brak zatwierdzonych użytkowników"
+    },
+    "table": {
+      "user": "Użytkownik",
+      "username": "Nazwa użytkownika",
+      "email": "Email",
+      "registered": "Rejestracja",
+      "role": "Rola",
+      "expires": "Wygasa",
+      "never": "Nigdy",
+      "actions": "Akcje",
+      "approve": "Zatwierdź",
+      "reject": "Odrzuć"
+    },
+    "signOut": "Wyloguj się"
+  },
+  "nav": {
+    "theme": "Motyw",
+    "language": "Język",
+    "account": "Konto",
+    "admin": "Panel admina",
+    "settings": "Ustawienia",
+    "help": "Pomoc",
+    "changelog": "Dziennik zmian",
+    "accSettings": "Ustawienia konta",
+    "signOut": "Wyloguj się",
+    "validUntil": "Konto wygasa"
+  },
+  "greetings": {
+    "0": "Hej, {name}!",
+    "1": "Cześć, {name}!",
+    "2": "Witaj, {name}!",
+    "3": "Miło Cię widzieć, {name}!",
+    "4": "Co słychać, {name}?",
+    "5": "Witaj na pokładzie, {name}!",
+    "6": "Gotowy do lotu, {name}?",
+    "7": "Czystego nieba, {name}!",
+    "8": "Wysokich lotów, {name}!"
+  },
+  "tabs": {
+    "aircraft": "Samolot",
+    "glider": "Szybowiec",
+    "fstd": "FSTD",
+    "route": "Trasa",
+    "weather": "Pogoda",
+    "ofp": "OFP"
+  },
+  "home": {
+    "logbook": {
+      "title": "Logbook",
+      "aeroplane": "Samolot",
+      "aeroplaneDesc": "Dziennik lotów zgodny z Part-FCL",
+      "glider": "Szybowiec",
+      "gliderDesc": "Dziennik lotów zgodny z Part-SFCL",
+      "fstd": "FSTD",
+      "fstdDesc": "Dziennik urządzeń treningowych Part-FCL"
+    },
+    "planning": {
+      "title": "Planowanie lotu",
+      "route": "Trasa",
+      "routeDesc": "Punkty VFR i interaktywna mapa",
+      "weather": "Pogoda",
+      "weatherDesc": "Depesze METAR, TAF i NOTAM",
+      "ofp": "OFP",
+      "ofpDesc": "Generator Operacyjnego Planu Lotu"
+    },
+    "management": {
+      "title": "Zarządzanie",
+      "settings": "Ustawienia konta",
+      "settingsDesc": "Profil, preferencje i subskrypcja",
+      "manual": "Instrukcja",
+      "manualDesc": "Podręcznik użytkownika",
+      "changelog": "Changelog",
+      "changelogDesc": "Historia wersji i aktualizacji"
+    }
+  },
+  "theme": {
+    "light": "Jasny",
+    "dark": "Ciemny",
+    "system": "Systemowy"
+  },
+  "validation": {
+    "firstNameMin": "Imię musi mieć co najmniej 2 znaki",
+    "lastNameMin": "Nazwisko musi mieć co najmniej 2 znaki",
+    "usernameMin": "Nazwa użytkownika musi mieć co najmniej 3 znaki",
+    "usernameFormat": "Nazwa użytkownika może zawierać tylko litery, cyfry, kropki, myślniki i podkreślenia",
+    "invalidEmail": "Nieprawidłowy adres email",
+    "passwordMin": "Hasło musi mieć co najmniej 8 znaków",
+    "passwordsMismatch": "Hasła nie są zgodne",
+    "loginRequired": "Email lub nazwa użytkownika jest wymagana",
+    "passwordRequired": "Hasło jest wymagane"
+  },
+  "map": {
+    "settings": "Ustawienia mapy",
+    "layers": "Warstwy",
+    "route": "Trasa",
+    "waypoints": "Punkty nawigacyjne",
+    "locationErrorTitle": "Brak dostępu do lokalizacji",
+    "locationErrorMsg": "FlyteLog nie może ustalić Twojej pozycji. Sprawdź, czy przeglądarka i system operacyjny zezwalają na dostęp do lokalizacji."
+  }
+}
