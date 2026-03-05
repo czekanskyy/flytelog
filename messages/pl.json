@@ -73,22 +73,22 @@
     "admin": "Panel admina",
     "settings": "Ustawienia",
     "help": "Pomoc",
-    "changelog": "Zmiany",
+    "changelog": "Dziennik zmian",
     "signOut": "Wyloguj się"
   },
   "greetings": {
-    "0": "Hej, {name}!",
-    "1": "Witaj na pokładzie, {name}!",
-    "2": "Czyste niebo, {name}!",
-    "3": "Gotowy do lotu, {name}?",
-    "4": "Miło Cię widzieć, {name}!",
-    "5": "Miękkiego lądowania, {name}!",
-    "6": "Cisza w eterze, {name}!",
-    "7": "Wszystko na zielono, {name}!",
-    "8": "Niebo jest granicą, {name}!"
+		"0": "Hej, {name}!",
+    "1": "Cześć, {name}!",
+    "2": "Witaj, {name}!",
+    "3": "Miło Cię widzieć, {name}!",
+    "4": "Co słychać, {name}?",
+    "5": "Witaj na pokładzie, {name}!",
+    "6": "Gotowy do lotu, {name}?",
+    "7": "Czystego nieba, {name}!",
+    "8": "Wysokich lotów, {name}!"
   },
   "tabs": {
-    "aeroplane": "Samolot",
+    "aircraft": "Samolot",
     "glider": "Szybowiec",
     "fstd": "FSTD",
     "route": "Trasa / Mapa",
