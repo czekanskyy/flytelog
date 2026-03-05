@@ -69,6 +69,8 @@
     "signOut": "Sign out"
   },
   "nav": {
+    "theme": "Theme",
+    "language": "Language",
     "account": "Account",
     "admin": "Admin panel",
     "settings": "Settings",
@@ -88,26 +90,26 @@
     "8": "Sky's the limit, {name}!"
   },
   "tabs": {
-    "aircraft": "Aeroplane",
+    "aircraft": "Aircraft",
     "glider": "Glider",
     "fstd": "FSTD",
-    "route": "Route / Map",
+    "route": "Route",
     "weather": "Weather",
     "ofp": "OFP"
   },
   "home": {
     "logbook": {
       "title": "Logbook",
-      "aeroplane": "Aeroplane",
+      "aeroplane": "Aircraft",
       "aeroplaneDesc": "Part-FCL compliant flight log",
       "glider": "Glider",
       "gliderDesc": "Part-SFCL compliant soaring log",
-      "fstd": "FSTD / Simulator",
+      "fstd": "FSTD",
       "fstdDesc": "Part-FCL training device log"
     },
     "planning": {
       "title": "Flight Planning",
-      "route": "Route / Map",
+      "route": "Route",
       "routeDesc": "VFR waypoints and interactive map",
       "weather": "Weather",
       "weatherDesc": "METAR, TAF and NOTAM briefing",

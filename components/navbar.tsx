@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl';
 import { UserAvatar } from '@/components/user-avatar';
 import { ThemeDropdown, LocaleDropdown } from '@/components/nav-dropdowns';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/skeleton';
 
 const GREETING_COUNT = 9;
 
@@ -19,13 +20,13 @@ type NavbarProps = {
 
 export function Navbar({ firstName, lastName, avatarColor, isAdmin }: NavbarProps) {
   const t = useTranslations();
-  const [greetingIndex, setGreetingIndex] = useState(0);
+  const [greetingIndex, setGreetingIndex] = useState(-1);
 
   useEffect(() => {
     setGreetingIndex(Math.floor(Math.random() * GREETING_COUNT));
   }, []);
 
-  const greeting = t(`greetings.${greetingIndex}`, { name: firstName });
+  const isMounted = greetingIndex >= 0;
 
   const navLinks = [
     { icon: Megaphone, label: t('nav.changelog'), href: '/changelog' },
@@ -36,23 +37,29 @@ export function Navbar({ firstName, lastName, avatarColor, isAdmin }: NavbarProp
 
   return (
     <header className='sticky top-0 z-50 px-3 pt-3 md:px-4 md:pt-4'>
-      <div className='mx-auto max-w-7xl rounded-2xl border border-slate-200/80 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl shadow-lg shadow-slate-200/50 dark:shadow-zinc-950/50'>
+      <div className='mx-auto max-w-7xl rounded-xl border border-slate-200/80 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl shadow-lg shadow-slate-200/50 dark:shadow-zinc-950/50'>
         <div className='relative flex h-14 items-center justify-between px-4 lg:px-5'>
           {/* Left — logo */}
           <Link href='/' className='text-lg font-bold tracking-tight text-sky-600 dark:text-sky-400 select-none shrink-0'>
             flyteLog
           </Link>
 
-          {/* Center — greeting (absolutely centered, pointer-events-none so it doesn't block clicks) */}
-          <p className='absolute inset-x-0 text-center text-sm text-slate-500 dark:text-zinc-400 truncate pointer-events-none hidden md:block px-48'>
-            {greeting}
-          </p>
+          {/* Center — greeting */}
+          <div className='absolute inset-x-0 hidden md:flex justify-center pointer-events-none px-48'>
+            {isMounted ? (
+              <p className='text-sm text-slate-500 dark:text-zinc-400 truncate'>{t(`greetings.${greetingIndex}`, { name: firstName })}</p>
+            ) : (
+              <Skeleton className='h-4 w-40' />
+            )}
+          </div>
 
           {/* Right — actions */}
 
           <div className='flex items-center gap-0.5'>
             <ThemeDropdown />
             <LocaleDropdown />
+
+            <div className='w-px h-5 rounded-full border border-slate-500 dark:border-zinc-400 mx-2' />
 
             {navLinks.map(({ icon: Icon, label, href }) => (
               <Button
@@ -69,7 +76,7 @@ export function Navbar({ firstName, lastName, avatarColor, isAdmin }: NavbarProp
               </Button>
             ))}
 
-            <Button variant='ghost' size='sm' className='h-9 w-9 px-0 ml-0.5' title={t('nav.account')}>
+            <Button variant='ghost' size='sm' className='h-9 w-9 px-0 ml-0.5 rounded-full' title={t('nav.account')}>
               <UserAvatar firstName={firstName} lastName={lastName} color={avatarColor} size='sm' />
             </Button>
           </div>

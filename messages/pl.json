@@ -69,6 +69,8 @@
     "signOut": "Wyloguj się"
   },
   "nav": {
+    "theme": "Motyw",
+    "language": "Język",
     "account": "Konto",
     "admin": "Panel admina",
     "settings": "Ustawienia",
@@ -77,7 +79,7 @@
     "signOut": "Wyloguj się"
   },
   "greetings": {
-		"0": "Hej, {name}!",
+    "0": "Hej, {name}!",
     "1": "Cześć, {name}!",
     "2": "Witaj, {name}!",
     "3": "Miło Cię widzieć, {name}!",
@@ -91,7 +93,7 @@
     "aircraft": "Samolot",
     "glider": "Szybowiec",
     "fstd": "FSTD",
-    "route": "Trasa / Mapa",
+    "route": "Trasa",
     "weather": "Pogoda",
     "ofp": "OFP"
   },
@@ -102,12 +104,12 @@
       "aeroplaneDesc": "Dziennik lotów zgodny z Part-FCL",
       "glider": "Szybowiec",
       "gliderDesc": "Dziennik lotów zgodny z Part-SFCL",
-      "fstd": "FSTD / Symulator",
+      "fstd": "FSTD",
       "fstdDesc": "Dziennik urządzeń treningowych Part-FCL"
     },
     "planning": {
       "title": "Planowanie lotu",
-      "route": "Trasa / Mapa",
+      "route": "Trasa",
       "routeDesc": "Punkty VFR i interaktywna mapa",
       "weather": "Pogoda",
       "weatherDesc": "Depesze METAR, TAF i NOTAM",
