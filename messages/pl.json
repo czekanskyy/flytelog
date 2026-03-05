@@ -76,7 +76,9 @@
     "settings": "Ustawienia",
     "help": "Pomoc",
     "changelog": "Dziennik zmian",
-    "signOut": "Wyloguj się"
+    "accSettings": "Ustawienia konta",
+    "signOut": "Wyloguj się",
+    "validUntil": "Konto wygasa"
   },
   "greetings": {
     "0": "Hej, {name}!",
@@ -141,5 +143,13 @@
     "passwordsMismatch": "Hasła nie są zgodne",
     "loginRequired": "Email lub nazwa użytkownika jest wymagana",
     "passwordRequired": "Hasło jest wymagane"
+  },
+  "map": {
+    "settings": "Ustawienia mapy",
+    "layers": "Warstwy",
+    "route": "Trasa",
+    "waypoints": "Punkty nawigacyjne",
+    "locationErrorTitle": "Brak dostępu do lokalizacji",
+    "locationErrorMsg": "FlyteLog nie może ustalić Twojej pozycji. Sprawdź, czy przeglądarka i system operacyjny zezwalają na dostęp do lokalizacji."
   }
 }

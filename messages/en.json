@@ -76,7 +76,9 @@
     "settings": "Settings",
     "help": "Help",
     "changelog": "Changelog",
-    "signOut": "Sign out"
+    "accSettings": "Account settings",
+    "signOut": "Sign out",
+    "validUntil": "Account expires"
   },
   "greetings": {
     "0": "Hi, {name}!",
@@ -141,5 +143,13 @@
     "passwordsMismatch": "Passwords do not match",
     "loginRequired": "Email or username is required",
     "passwordRequired": "Password is required"
+  },
+  "map": {
+    "settings": "Map settings",
+    "layers": "Layers",
+    "route": "Route",
+    "waypoints": "Waypoints",
+    "locationErrorTitle": "Location unavailable",
+    "locationErrorMsg": "FlyteLog could not determine your position. Please check if your browser and OS allow location access."
   }
 }

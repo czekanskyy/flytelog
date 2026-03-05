@@ -1,15 +1,26 @@
-import { Map } from "lucide-react"
+'use client';
+
+import dynamic from 'next/dynamic';
+
+import { MapSidebar } from '@/components/map-sidebar';
+
+const DynamicWorldMap = dynamic(() => import('@/components/worldmap'), {
+  ssr: false,
+  loading: () => (
+    <div className='fixed inset-0 z-0 flex items-center justify-center bg-slate-100 dark:bg-zinc-900'>
+      <div className='animate-pulse flex flex-col items-center gap-4'>
+        <div className='h-8 w-8 rounded-full border-4 border-slate-300 dark:border-zinc-700 border-t-sky-500 animate-spin' />
+        <p className='text-slate-500 dark:text-zinc-400 text-sm'>Loading map...</p>
+      </div>
+    </div>
+  ),
+});
 
 export default function RoutePage() {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
-      <Map className="h-12 w-12 text-sky-500/30" />
-      <h1 className="text-xl font-bold text-slate-800 dark:text-zinc-100">
-        Route / Map
-      </h1>
-      <p className="text-sm text-slate-500 dark:text-zinc-400">
-        VFR waypoints and interactive map — coming soon
-      </p>
+    <div className='fixed inset-0 z-0'>
+      <MapSidebar />
+      <DynamicWorldMap />
     </div>
-  )
+  );
 }

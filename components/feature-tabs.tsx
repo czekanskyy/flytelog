@@ -42,47 +42,39 @@ export function FeatureTabs() {
   }, [clearHideTimer]);
 
   return (
-    <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className='absolute left-0 right-0 z-40 flex flex-col items-center'>
+    <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className='absolute left-1/2 -translate-x-1/2 z-40 flex flex-col items-center px-8'>
       {/* Invisible hover trigger zone — always present */}
-      <div className='h-5 w-full' />
+      <div className='h-3 -mx-1 w-max' />
 
-      <AnimatePresence>
-        {isVisible && (
-          <motion.div
-            initial={{ y: -20, opacity: 0, scaleY: 0.95 }}
-            animate={{ y: 0, opacity: 1, scaleY: 1 }}
-            exit={{ y: -20, opacity: 0, scaleY: 0.95 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-            className='origin-top'
-          >
-            <nav className='mx-auto w-fit rounded-xl border border-slate-200/80 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl shadow-lg shadow-slate-200/30 dark:shadow-zinc-950/30'>
-              <div className='flex items-center gap-1 p-2'>
-                {tabs.map(({ key, href, icon: Icon }) => {
-                  const isActive = pathname.startsWith(href);
+      <motion.nav
+        initial={false}
+        animate={isVisible ? { y: 0, opacity: 1, scaleY: 1 } : { y: -20, opacity: 0, scaleY: 0.95 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+        className={`origin-top mx-auto w-fit rounded-xl bg-white/75 dark:bg-zinc-900/75 backdrop-blur-lg shadow-lg shadow-slate-200/50 dark:shadow-zinc-950/50 ${
+          isVisible ? 'pointer-events-auto' : 'pointer-events-none'
+        }`}
+      >
+        <div className='flex items-center gap-1 p-2'>
+          {tabs.map(({ key, href, icon: Icon }) => {
+            const isActive = pathname.startsWith(href);
 
-                  return (
-                    <Link
-                      key={key}
-                      href={href}
-                      className={`
-                        flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-md transition-colors select-none whitespace-nowrap
-                        ${
-                          isActive
-                            ? 'bg-sky-100 dark:bg-sky-500/15 text-sky-600 dark:text-sky-400'
-                            : 'text-slate-500 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-700 dark:hover:text-zinc-300'
-                        }
-                      `}
-                    >
-                      <Icon className='h-4 w-4 shrink-0' />
-                      <span className='hidden sm:inline'>{t(key)}</span>
-                    </Link>
-                  );
-                })}
-              </div>
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            return (
+              <Link
+                key={key}
+                href={href}
+                className={`flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-md transition-colors select-none whitespace-nowrap ${
+                  isActive
+                    ? 'bg-sky-100 dark:bg-sky-500/15 text-sky-600 dark:text-sky-400'
+                    : 'text-slate-500 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-700 dark:hover:text-zinc-300'
+                }`}
+              >
+                <Icon className='h-4 w-4 shrink-0' />
+                <span className='hidden sm:inline'>{t(key)}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </motion.nav>
 
       {/* Bottom padding zone for easier mouse interaction */}
       <div className='h-6 w-full' />
