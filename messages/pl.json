@@ -38,6 +38,7 @@
     "errors": {
       "notApproved": "Twoje konto oczekuje na zatwierdzenie przez administratora",
       "expired": "Twoje konto wygasło. Skontaktuj się z administratorem.",
+      "userNotFound": "Nie znaleziono konta z podanym adresem email lub nazwą użytkownika",
       "invalidCredentials": "Nieprawidłowy email/nazwa użytkownika lub hasło",
       "emailTaken": "Ten adres email jest już zajęty",
       "usernameTaken": "Ta nazwa użytkownika jest już zajęta"
@@ -182,6 +183,13 @@
     "mapObjects": "Obiekty na mapie",
     "airports": "Lotniska",
     "navaids": "Pomoce nawigacyjne",
-    "obstacles": "Przeszkody"
+    "obstacles": "Przeszkody",
+    "reportingPoints": "Punkty VFR",
+    "dynamicAirspaces": "Dynamiczne (AUP)",
+    "staticAirspaces": "Statyczne",
+    "otherAirspaces": "Informacyjne",
+    "aupSync": "Sync AUP",
+    "aupSyncing": "Synchronizuję…",
+    "aupLastSync": "Zsynchronizowano"
   }
 }

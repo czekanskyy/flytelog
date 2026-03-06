@@ -13,7 +13,7 @@ export interface Waypoint {
   lat: number;
   lon: number;
   elev?: number | null;
-  type: 'airport' | 'navaid' | 'location' | 'peak' | 'custom';
+  type: 'airport' | 'navaid' | 'reporting-point' | 'location' | 'peak' | 'custom';
   role: WaypointRole;
 }
 
@@ -149,7 +149,7 @@ export function RouteProvider({ children }: { children: ReactNode }) {
         return next;
       });
     },
-    [legs],
+    [legs]
   );
 
   const clearRoute = useCallback(() => {
@@ -196,5 +196,7 @@ export function toFplCoords(lat: number, lon: number): string {
   const latMin = (absLat - latDeg) * 60;
   const lonDeg = Math.floor(absLon);
   const lonMin = (absLon - lonDeg) * 60;
-  return `${String(latDeg).padStart(2, '0')}${latMin.toFixed(2).padStart(5, '0')}${latDir}/${String(lonDeg).padStart(3, '0')}${lonMin.toFixed(2).padStart(5, '0')}${lonDir}`;
+  return `${String(latDeg).padStart(2, '0')}${latMin.toFixed(2).padStart(5, '0')}${latDir}/${String(lonDeg).padStart(3, '0')}${lonMin
+    .toFixed(2)
+    .padStart(5, '0')}${lonDir}`;
 }
