@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ChevronRight,
+  ChevronDown,
   ChevronLeft,
   Download,
   X,
@@ -16,11 +16,13 @@ import {
   Plus,
   Layers,
   Mountain,
-  Plane,
   Navigation,
   MapPin,
-  TriangleAlert,
+  TrafficCone,
+  SquareDot,
+  Triangle,
   Radio,
+  Flag,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTranslations } from 'next-intl';
@@ -38,29 +40,98 @@ export interface LayerState {
   showAirports: boolean;
   showNavaids: boolean;
   showObstacles: boolean;
+  showReportingPoints: boolean;
 }
 
+// ---------------------------------------------------------------------------
+// OpenAIP type number reference (actual values from /api/aero-data):
+//  1=R, 2=D, 3=P, 4=CTR, 5=TMZ, 6=RMZ, 7=TMA, 8=TRA, 9=TSA,
+//  10=FIR, 13=ATZ, 18=BVLOS, 21=LFA, 28=SPORT, 30=MRT, 33=NPZ
+// ---------------------------------------------------------------------------
+
 const DEFAULT_LAYERS: LayerState = {
-  airspaceTypes: { 1: true, 2: true, 4: true, 6: true, 8: true, 10: true, 14: true },
+  airspaceTypes: {
+    9: false,
+    8: false,
+    2: false,
+    13: false,
+    30: false,
+    33: false,
+    1: false,
+    4: false,
+    7: false,
+    3: false,
+    6: false,
+    5: false,
+    18: false,
+    21: false,
+    28: false,
+  },
   altitudeRange: [0, 9500],
   showTerrain: false,
   terrainOpacity: 0.5,
   showAirports: false,
   showNavaids: false,
   showObstacles: false,
+  showReportingPoints: false,
 };
 
-const AIRSPACE_TYPE_LABELS: Record<number, string> = {
-  1: 'CTR',
-  2: 'TMA',
-  4: 'ATZ',
-  6: 'R',
-  8: 'D',
-  10: 'P',
-  14: 'ADIZ',
-  20: 'TSA',
-  22: 'TRA',
-};
+interface AirspaceTypeConfig {
+  type: number;
+  label: string;
+  color: string;
+}
+
+/**
+ * AUP-activated / dynamic airspaces.
+ * Zarządzane elastycznie przez AUP — aktywowane na bieżąco.
+ */
+const DYNAMIC_TYPES: AirspaceTypeConfig[] = [
+  { type: 9, label: 'TSA', color: '#ef4444' }, // 43 records
+  { type: 8, label: 'TRA', color: '#f97316' }, // 246 records
+  { type: 2, label: 'D', color: '#a855f7' }, // 28 records
+  { type: 13, label: 'ATZ', color: '#22c55e' }, // 50 records
+  { type: 30, label: 'MRT', color: '#6366f1' }, // 151 records
+  { type: 33, label: 'NPZ', color: '#64748b' }, // 9 records
+];
+
+/**
+ * Static / always-active airspaces.
+ * Zawsze aktywne — stałe struktury przestrzeni powietrznej.
+ */
+const STATIC_TYPES: AirspaceTypeConfig[] = [
+  { type: 1, label: 'R', color: '#dc2626' }, // 28 records
+  { type: 4, label: 'CTR', color: '#3b82f6' }, // 31 records
+  { type: 7, label: 'TMA', color: '#0ea5e9' }, // 75 records
+  { type: 3, label: 'P', color: '#7f1d1d' }, // 32 records
+];
+
+/**
+ * Informational / recreational airspaces — off by default.
+ * Strefy informacyjne i rekreacyjne.
+ */
+const OTHER_TYPES: AirspaceTypeConfig[] = [
+  { type: 6, label: 'RMZ', color: '#94a3b8' }, // 69 records
+  { type: 5, label: 'TMZ', color: '#818cf8' }, // 1 record
+  { type: 18, label: 'BVLOS', color: '#f59e0b' }, // 35 records
+  { type: 21, label: 'LFA', color: '#84cc16' }, // 47 records
+  { type: 28, label: 'SPORT', color: '#ec4899' }, // 106 records
+];
+
+/**
+ * Format altitude for the sidebar slider label.
+ * 0 ft      → "GND"
+ * 1–6500 ft → A-prefix in hundreds, e.g. A15, A65
+ * ≥7000 ft  → FL-prefix, e.g. FL070, FL245
+ * ≥66000 ft → "UNL"
+ */
+function formatAltFt(ft: number): string {
+  if (ft === 0) return 'GND';
+  if (ft >= 66000) return 'UNL';
+  if (ft <= 6500) return `A${Math.round(ft / 100)}`;
+  const fl = Math.round(ft / 100);
+  return `FL${String(fl).padStart(3, '0')}`;
+}
 
 interface MapSidebarProps {
   onLayerChange: (layers: LayerState) => void;
@@ -69,13 +140,25 @@ interface MapSidebarProps {
 export function MapSidebar({ onLayerChange }: MapSidebarProps) {
   const t = useTranslations('map');
   const [isExpanded, setIsExpanded] = useState(false);
-  const [activeTab, setActiveTab] = useState<'route' | 'layers'>('route');
+  // Which accordion sections are open (multiple can be open simultaneously)
+  const [openSections, setOpenSections] = useState<Set<string>>(new Set(['route']));
   const [layers, setLayers] = useState<LayerState>(DEFAULT_LAYERS);
   const [terrainProfile, setTerrainProfile] = useState<TerrainSample[]>([]);
   const [navlogEntries, setNavlogEntries] = useState<NavlogEntry[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<WaypointSearchResult[]>([]);
   const [showEnrouteSearch, setShowEnrouteSearch] = useState(false);
+  const [isSyncingAup, setIsSyncingAup] = useState(false);
+  const [aupLastSync, setAupLastSync] = useState<Date | null>(null);
+
+  const toggleSection = useCallback((id: string) => {
+    setOpenSections(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
 
   const { waypoints, legs, departure, destination, removeWaypoint, setDeparture, setDestination, addEnroute, reorderWaypoints, setLegAltitude, clearRoute } =
     useRoute();
@@ -113,6 +196,19 @@ export function MapSidebar({ onLayerChange }: MapSidebarProps) {
     }));
   }, []);
 
+  const handleAupSync = useCallback(async () => {
+    setIsSyncingAup(true);
+    try {
+      await fetch('/api/aup/sync', { method: 'POST' });
+      setAupLastSync(new Date());
+      if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(50);
+    } catch (err) {
+      console.error('[AUP sync]', err);
+    } finally {
+      setIsSyncingAup(false);
+    }
+  }, []);
+
   useEffect(() => {
     if (searchQuery.length < 2) {
       setSearchResults([]);
@@ -140,7 +236,7 @@ export function MapSidebar({ onLayerChange }: MapSidebarProps) {
       setSearchResults([]);
       setShowEnrouteSearch(false);
     },
-    [setDeparture, setDestination, addEnroute],
+    [setDeparture, setDestination, addEnroute]
   );
 
   const handleDragStart = (index: number) => setDragIndex(index);
@@ -161,105 +257,162 @@ export function MapSidebar({ onLayerChange }: MapSidebarProps) {
       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
       className='absolute top-18 left-2 z-40 bottom-2 flex flex-col rounded-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl shadow-xl overflow-hidden select-none'
     >
-      {/* Tab Bar */}
-      <div className='flex shrink-0'>
-        <TabButton
-          active={isExpanded && activeTab === 'route'}
+      {/* Icon strip — always visible */}
+      <div className='flex flex-col shrink-0 py-2 gap-1'>
+        <SidebarIconButton
+          icon={PlaneTakeoff}
+          active={isExpanded && openSections.has('route')}
+          label={t('route')}
+          isExpanded={isExpanded}
           onClick={() => {
-            setIsExpanded(true);
-            setActiveTab('route');
+            if (!isExpanded) {
+              setIsExpanded(true);
+              setOpenSections(new Set(['route']));
+            } else toggleSection('route');
           }}
-          collapsed={!isExpanded}
-        >
-          <PlaneTakeoff className='h-4 w-4' />
-          {isExpanded && <span className='text-xs'>{t('route')}</span>}
-        </TabButton>
-        <TabButton
-          active={isExpanded && activeTab === 'layers'}
+        />
+        <SidebarIconButton
+          icon={Layers}
+          active={isExpanded && openSections.has('layers')}
+          label={t('layers')}
+          isExpanded={isExpanded}
           onClick={() => {
-            setIsExpanded(true);
-            setActiveTab('layers');
+            if (!isExpanded) {
+              setIsExpanded(true);
+              setOpenSections(new Set(['layers']));
+            } else toggleSection('layers');
           }}
-          collapsed={!isExpanded}
-        >
-          <Layers className='h-4 w-4' />
-          {isExpanded && <span className='text-xs'>{t('layers')}</span>}
-        </TabButton>
+        />
+
         {isExpanded && (
           <button
             onClick={() => setIsExpanded(false)}
-            className='flex h-12 w-10 items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-zinc-300 transition-colors ml-auto'
+            className='flex h-10 w-10 items-center justify-center self-end mr-1 text-slate-400 hover:text-slate-600 dark:hover:text-zinc-300 transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-zinc-800'
           >
             <ChevronLeft className='h-4 w-4' />
           </button>
         )}
       </div>
 
-      <div className='mx-3 h-px bg-slate-200/80 dark:bg-zinc-700/80' />
+      <div className='mx-3 h-px bg-slate-200/80 dark:bg-zinc-700/80 shrink-0' />
 
-      {/* Content */}
-      <AnimatePresence mode='wait'>
-        {isExpanded && (
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className='flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-3'
-          >
-            {activeTab === 'route' ? (
-              <RouteTab
-                departure={departure}
-                destination={destination}
-                waypoints={waypoints}
-                legs={legs}
-                navlogEntries={navlogEntries}
-                terrainProfile={terrainProfile}
-                totalDistance={totalDistance}
-                searchQuery={searchQuery}
-                searchResults={searchResults}
-                showEnrouteSearch={showEnrouteSearch}
-                dragIndex={dragIndex}
-                onSearchChange={setSearchQuery}
-                onSearchSelect={handleSearchSelect}
-                onToggleEnrouteSearch={() => setShowEnrouteSearch(!showEnrouteSearch)}
-                onRemoveWaypoint={removeWaypoint}
-                onSetLegAltitude={setLegAltitude}
-                onClearRoute={clearRoute}
-                onDragStart={handleDragStart}
-                onDragOver={handleDragOver}
-                onDragEnd={handleDragEnd}
-                t={t}
-              />
-            ) : (
-              <LayersTab
-                layers={layers}
-                onToggleAirspaceType={toggleAirspaceType}
-                onUpdateLayer={updateLayer}
-                isOffline={isOffline}
-                isDownloading={isDownloading}
-                onDownload={downloadForOffline}
-                lastDownloadDate={lastDownloadDate}
-                t={t}
-              />
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Accordion content */}
+      {isExpanded && (
+        <div className='flex-1 overflow-y-auto px-3 py-2 flex flex-col gap-0'>
+          <AccordionSection id='route' icon={PlaneTakeoff} title={t('route')} isOpen={openSections.has('route')} onToggle={toggleSection}>
+            <RouteTab
+              departure={departure}
+              destination={destination}
+              waypoints={waypoints}
+              legs={legs}
+              navlogEntries={navlogEntries}
+              terrainProfile={terrainProfile}
+              totalDistance={totalDistance}
+              searchQuery={searchQuery}
+              searchResults={searchResults}
+              showEnrouteSearch={showEnrouteSearch}
+              dragIndex={dragIndex}
+              onSearchChange={setSearchQuery}
+              onSearchSelect={handleSearchSelect}
+              onToggleEnrouteSearch={() => setShowEnrouteSearch(!showEnrouteSearch)}
+              onRemoveWaypoint={removeWaypoint}
+              onSetLegAltitude={setLegAltitude}
+              onClearRoute={clearRoute}
+              onDragStart={handleDragStart}
+              onDragOver={handleDragOver}
+              onDragEnd={handleDragEnd}
+              t={t}
+            />
+          </AccordionSection>
+
+          <AccordionSection id='layers' icon={Layers} title={t('layers')} isOpen={openSections.has('layers')} onToggle={toggleSection}>
+            <LayersTab
+              layers={layers}
+              onToggleAirspaceType={toggleAirspaceType}
+              onUpdateLayer={updateLayer}
+              isOffline={isOffline}
+              isDownloading={isDownloading}
+              onDownload={downloadForOffline}
+              lastDownloadDate={lastDownloadDate}
+              isSyncingAup={isSyncingAup}
+              aupLastSync={aupLastSync}
+              onAupSync={handleAupSync}
+              t={t}
+            />
+          </AccordionSection>
+        </div>
+      )}
     </motion.div>
   );
 }
 
-function TabButton({ active, onClick, collapsed, children }: { active: boolean; onClick: () => void; collapsed: boolean; children: React.ReactNode }) {
+function SidebarIconButton({
+  icon: Icon,
+  active,
+  label,
+  isExpanded,
+  onClick,
+}: {
+  icon: React.ElementType;
+  active: boolean;
+  label: string;
+  isExpanded: boolean;
+  onClick: () => void;
+}) {
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-1.5 px-3 h-12 transition-colors ${
-        active ? 'text-sky-600 dark:text-sky-400 border-b-2 border-sky-500' : 'text-slate-500 dark:text-zinc-400 hover:text-slate-700 dark:hover:text-zinc-300'
-      } ${collapsed ? 'flex-1 justify-center' : ''}`}
+      title={!isExpanded ? label : undefined}
+      className={`flex items-center gap-2 mx-2 px-2 h-10 rounded-xl text-sm font-medium transition-colors ${
+        active
+          ? 'bg-sky-100 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400'
+          : 'text-slate-500 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-700 dark:hover:text-zinc-200'
+      } ${isExpanded ? 'w-auto' : 'w-10 justify-center'}`}
     >
-      {children}
+      <Icon className='h-4 w-4 shrink-0' />
+      {isExpanded && <span className='text-xs truncate'>{label}</span>}
     </button>
+  );
+}
+
+function AccordionSection({
+  id,
+  icon: Icon,
+  title,
+  isOpen,
+  onToggle,
+  children,
+}: {
+  id: string;
+  icon: React.ElementType;
+  title: string;
+  isOpen: boolean;
+  onToggle: (id: string) => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className='border-b border-slate-200/60 dark:border-zinc-700/60 last:border-0'>
+      <button onClick={() => onToggle(id)} className='flex items-center justify-between w-full py-2.5 text-left group'>
+        <div className='flex items-center gap-2'>
+          <Icon className='h-3.5 w-3.5 text-slate-500 dark:text-zinc-400 shrink-0' />
+          <span className='text-xs font-semibold text-slate-600 dark:text-zinc-300 uppercase tracking-wider'>{title}</span>
+        </div>
+        <ChevronDown className={`h-3.5 w-3.5 text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            className='overflow-hidden'
+          >
+            <div className='pb-3 flex flex-col gap-3'>{children}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
@@ -435,7 +588,9 @@ function RouteTab({
                   onDragStart={() => onDragStart(realIndex)}
                   onDragOver={(e: React.DragEvent) => onDragOver(e, realIndex)}
                   onDragEnd={onDragEnd}
-                  className={`flex items-center gap-1.5 rounded-lg bg-slate-50 dark:bg-zinc-800/80 px-2 py-1.5 text-xs cursor-grab active:cursor-grabbing ${dragIndex === realIndex ? 'opacity-50' : ''}`}
+                  className={`flex items-center gap-1.5 rounded-lg bg-slate-50 dark:bg-zinc-800/80 px-2 py-1.5 text-xs cursor-grab active:cursor-grabbing ${
+                    dragIndex === realIndex ? 'opacity-50' : ''
+                  }`}
                 >
                   <GripVertical className='h-3 w-3 text-slate-300 dark:text-zinc-600 shrink-0' />
                   <span className='flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-sky-500 text-[9px] font-bold text-white'>{i + 1}</span>
@@ -548,50 +703,104 @@ function RouteTab({
   );
 }
 
-function LayersTab({ layers, onToggleAirspaceType, onUpdateLayer, isOffline, isDownloading, onDownload, lastDownloadDate, t }: any) {
+function AirspaceTypeGrid({ types, layers, onToggle }: { types: AirspaceTypeConfig[]; layers: LayerState; onToggle: (t: number) => void }) {
+  return (
+    <div className='grid grid-cols-3 gap-1.5'>
+      {types.map(({ type, label, color }) => {
+        const active = layers.airspaceTypes[type] ?? false;
+        return (
+          <button
+            key={type}
+            onClick={() => onToggle(type)}
+            className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-semibold transition-colors select-none border ${
+              active
+                ? 'bg-white dark:bg-zinc-800 shadow-sm border-slate-200 dark:border-zinc-600'
+                : 'bg-slate-100/70 dark:bg-zinc-800/50 border-slate-200 dark:border-zinc-700/60'
+            }`}
+          >
+            <span className='w-2 h-2 rounded-sm shrink-0 transition-colors' style={{ backgroundColor: active ? color : '#9ca3af' }} />
+            <span className='transition-colors' style={{ color: active ? color : '#9ca3af' }}>
+              {label}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function LayersTab({
+  layers,
+  onToggleAirspaceType,
+  onUpdateLayer,
+  isOffline,
+  isDownloading,
+  onDownload,
+  lastDownloadDate,
+  isSyncingAup,
+  aupLastSync,
+  onAupSync,
+  t,
+}: any) {
   return (
     <>
-      {/* Airspace Types */}
+      {/* Dynamic Airspaces (AUP) */}
       <div>
-        <h4 className='text-xs font-medium text-slate-500 dark:text-zinc-400 uppercase tracking-wider mb-2'>{t('airspaceTypes')}</h4>
-        <div className='grid grid-cols-3 gap-1.5'>
-          {Object.entries(AIRSPACE_TYPE_LABELS).map(([typeStr, label]) => {
-            const type = Number(typeStr);
-            const active = layers.airspaceTypes[type] ?? false;
-            return (
-              <button
-                key={type}
-                onClick={() => onToggleAirspaceType(type)}
-                className={`px-2 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                  active
-                    ? 'bg-sky-100 dark:bg-sky-500/20 text-sky-700 dark:text-sky-400 border border-sky-200 dark:border-sky-500/30'
-                    : 'bg-slate-100 dark:bg-zinc-800 text-slate-400 dark:text-zinc-500 border border-slate-200 dark:border-zinc-700'
-                }`}
-              >
-                {label}
-              </button>
-            );
-          })}
+        <div className='flex items-center justify-between mb-2'>
+          <div className='flex items-center gap-1.5'>
+            <span className='w-2 h-2 rounded-full bg-red-500 shrink-0' />
+            <h4 className='text-xs font-medium text-slate-500 dark:text-zinc-400 uppercase tracking-wider'>{t('dynamicAirspaces')}</h4>
+          </div>
+          <button
+            onClick={onAupSync}
+            disabled={isSyncingAup}
+            className='flex items-center gap-1 text-[10px] text-sky-500 hover:text-sky-600 disabled:opacity-50 transition-colors select-none'
+          >
+            <Navigation className={`h-3 w-3 ${isSyncingAup ? 'animate-spin' : ''}`} />
+            {isSyncingAup ? t('aupSyncing') : t('aupSync')}
+          </button>
         </div>
+        <AirspaceTypeGrid types={DYNAMIC_TYPES} layers={layers} onToggle={onToggleAirspaceType} />
+        {aupLastSync && (
+          <p className='mt-1.5 text-[10px] text-slate-400 dark:text-zinc-500'>
+            {t('aupLastSync')}: {aupLastSync.toLocaleTimeString()}
+          </p>
+        )}
+      </div>
+
+      {/* Static Airspaces */}
+      <div>
+        <div className='flex items-center gap-1.5 mb-2'>
+          <span className='w-2 h-2 rounded-full bg-blue-500 shrink-0' />
+          <h4 className='text-xs font-medium text-slate-500 dark:text-zinc-400 uppercase tracking-wider'>{t('staticAirspaces')}</h4>
+        </div>
+        <AirspaceTypeGrid types={STATIC_TYPES} layers={layers} onToggle={onToggleAirspaceType} />
+      </div>
+
+      {/* Other / Informational */}
+      <div>
+        <div className='flex items-center gap-1.5 mb-2'>
+          <span className='w-2 h-2 rounded-full bg-slate-400 shrink-0' />
+          <h4 className='text-xs font-medium text-slate-500 dark:text-zinc-400 uppercase tracking-wider'>{t('otherAirspaces')}</h4>
+        </div>
+        <AirspaceTypeGrid types={OTHER_TYPES} layers={layers} onToggle={onToggleAirspaceType} />
       </div>
 
       {/* Altitude Range */}
       <div>
         <h4 className='text-xs font-medium text-slate-500 dark:text-zinc-400 uppercase tracking-wider mb-2'>{t('altitudeRange')}</h4>
         <div className='flex items-center gap-2'>
-          <span className='text-[10px] text-slate-400 w-10'>GND</span>
+          <span className='text-[10px] text-slate-400 font-mono w-8'>GND</span>
           <input
             type='range'
             min={0}
-            max={24500}
+            max={66000}
             step={500}
             value={layers.altitudeRange[1]}
             onChange={e => onUpdateLayer('altitudeRange', [0, Number(e.target.value)])}
             className='flex-1 accent-sky-500'
           />
-          <span className='text-[10px] text-slate-400 w-16 text-right'>
-            {layers.altitudeRange[1] >= 10000 ? `FL${Math.round(layers.altitudeRange[1] / 100)}` : `${layers.altitudeRange[1]} ft`}
-          </span>
+          <span className='text-[10px] text-slate-400 font-mono w-14 text-right'>{formatAltFt(layers.altitudeRange[1])}</span>
         </div>
       </div>
 
@@ -625,9 +834,15 @@ function LayersTab({ layers, onToggleAirspaceType, onUpdateLayer, isOffline, isD
       <div>
         <h4 className='text-xs font-medium text-slate-500 dark:text-zinc-400 uppercase tracking-wider mb-2'>{t('mapObjects')}</h4>
         <div className='flex flex-col gap-1.5'>
-          <ToggleRow icon={Plane} label={t('airports')} checked={layers.showAirports} onChange={v => onUpdateLayer('showAirports', v)} />
-          <ToggleRow icon={Radio} label={t('navaids')} checked={layers.showNavaids} onChange={v => onUpdateLayer('showNavaids', v)} />
-          <ToggleRow icon={TriangleAlert} label={t('obstacles')} checked={layers.showObstacles} onChange={v => onUpdateLayer('showObstacles', v)} />
+          <ToggleRow icon={PlaneLanding} label={t('airports')} checked={layers.showAirports} onChange={v => onUpdateLayer('showAirports', v)} />
+          <ToggleRow icon={SquareDot} label={t('navaids')} checked={layers.showNavaids} onChange={v => onUpdateLayer('showNavaids', v)} />
+          <ToggleRow icon={TrafficCone} label={t('obstacles')} checked={layers.showObstacles} onChange={v => onUpdateLayer('showObstacles', v)} />
+          <ToggleRow
+            icon={Triangle}
+            label={t('reportingPoints')}
+            checked={layers.showReportingPoints}
+            onChange={v => onUpdateLayer('showReportingPoints', v)}
+          />
         </div>
       </div>
 

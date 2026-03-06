@@ -107,7 +107,7 @@ export async function GET() {
       const records = rps.map(rp => ({
         openaipId: rp._id,
         name: rp.name,
-        type: rp.type,
+        type: rp.type ?? null,
         lat: rp.geometry.coordinates[1],
         lon: rp.geometry.coordinates[0],
         elevation: rp.elevation?.value,
@@ -161,7 +161,7 @@ export async function GET() {
         details: err.response?.data,
         stack: err.stack,
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

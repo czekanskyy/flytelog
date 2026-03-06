@@ -56,6 +56,7 @@ function RoutePageInner() {
         airports={layers?.showAirports ? data?.airports : undefined}
         navaids={layers?.showNavaids ? data?.navaids : undefined}
         obstacles={layers?.showObstacles ? data?.obstacles : undefined}
+        reportingPoints={layers?.showReportingPoints ? data?.reportingPoints : undefined}
         onMapClick={handleMapClick}
         clickedPoint={clickedPoint}
       />

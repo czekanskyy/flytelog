@@ -1,13 +1,23 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { db, type AirportRecord, type AirspaceRecord, type NavaidRecord, type ObstacleRecord, type LocationRecord, type PeakRecord } from '@/lib/dexie/db';
+import {
+  db,
+  type AirportRecord,
+  type AirspaceRecord,
+  type NavaidRecord,
+  type ObstacleRecord,
+  type ReportingPointRecord,
+  type LocationRecord,
+  type PeakRecord,
+} from '@/lib/dexie/db';
 
 interface AeroData {
   airports: AirportRecord[];
   airspaces: AirspaceRecord[];
   navaids: NavaidRecord[];
   obstacles: ObstacleRecord[];
+  reportingPoints: ReportingPointRecord[];
 }
 
 interface AeroDataState {
@@ -38,14 +48,15 @@ async function getOfflineAeroData(): Promise<AeroData | null> {
   const meta = await db.syncMeta.get('main');
   if (!meta) return null;
 
-  const [airports, airspaces, navaids, obstacles] = await Promise.all([
+  const [airports, airspaces, navaids, obstacles, reportingPoints] = await Promise.all([
     db.airports.toArray(),
     db.airspaces.toArray(),
     db.navaids.toArray(),
     db.obstacles.toArray(),
+    db.reportingPoints.toArray(),
   ]);
 
-  return { airports, airspaces, navaids, obstacles };
+  return { airports, airspaces, navaids, obstacles, reportingPoints };
 }
 
 export function useAeroData() {
@@ -160,8 +171,16 @@ export function useAeroData() {
           ele: parseFloat(f.properties.ele || '0'),
         }));
 
-      await db.transaction('rw', [db.airports, db.airspaces, db.navaids, db.obstacles, db.locations, db.peaks, db.syncMeta], async () => {
-        await Promise.all([db.airports.clear(), db.airspaces.clear(), db.navaids.clear(), db.obstacles.clear(), db.locations.clear(), db.peaks.clear()]);
+      await db.transaction('rw', [db.airports, db.airspaces, db.navaids, db.obstacles, db.reportingPoints, db.locations, db.peaks, db.syncMeta], async () => {
+        await Promise.all([
+          db.airports.clear(),
+          db.airspaces.clear(),
+          db.navaids.clear(),
+          db.obstacles.clear(),
+          db.reportingPoints.clear(),
+          db.locations.clear(),
+          db.peaks.clear(),
+        ]);
 
         await Promise.all([
           db.airports.bulkAdd(
@@ -174,7 +193,7 @@ export function useAeroData() {
               lon,
               elevation,
               geometry,
-            })),
+            }))
           ),
           db.airspaces.bulkAdd(
             aeroData.airspaces.map(({ openaipId, name, type, icaoClass, upperLimit, lowerLimit, geometry }: any) => ({
@@ -185,7 +204,7 @@ export function useAeroData() {
               upperLimit,
               lowerLimit,
               geometry,
-            })),
+            }))
           ),
           db.navaids.bulkAdd(
             aeroData.navaids.map(({ openaipId, name, type, frequency, lat, lon, elevation }: any) => ({
@@ -196,7 +215,7 @@ export function useAeroData() {
               lat,
               lon,
               elevation,
-            })),
+            }))
           ),
           db.obstacles.bulkAdd(
             aeroData.obstacles.map(({ openaipId, type, lat, lon, elevation, heightAgl }: any) => ({
@@ -206,7 +225,17 @@ export function useAeroData() {
               lon,
               elevation,
               heightAgl,
-            })),
+            }))
+          ),
+          db.reportingPoints.bulkAdd(
+            aeroData.reportingPoints.map(({ openaipId, name, type, lat, lon, elevation }: any) => ({
+              openaipId,
+              name,
+              type,
+              lat,
+              lon,
+              elevation,
+            }))
           ),
           db.locations.bulkAdd(locationRecords),
           db.peaks.bulkAdd(peakRecords),
@@ -238,13 +267,17 @@ export function useAeroData() {
       const source = state.isOffline && state.hasOfflineData ? 'offline' : 'online';
 
       if (source === 'offline') {
-        const [airports, navaids, locations, peaks] = await Promise.all([
+        const [airports, navaids, reportingPoints, locations, peaks] = await Promise.all([
           db.airports
             .filter(a => a.name.toLowerCase().includes(lowerQuery) || (a.icaoCode?.toUpperCase().includes(upperQuery) ?? false))
             .limit(10)
             .toArray(),
           db.navaids
             .filter(n => n.name.toLowerCase().includes(lowerQuery))
+            .limit(10)
+            .toArray(),
+          db.reportingPoints
+            .filter(rp => rp.name.toLowerCase().includes(lowerQuery))
             .limit(10)
             .toArray(),
           db.locations
@@ -260,6 +293,7 @@ export function useAeroData() {
         return [
           ...airports.map(a => ({ type: 'airport' as const, name: a.name, icao: a.icaoCode, lat: a.lat, lon: a.lon, elev: a.elevation })),
           ...navaids.map(n => ({ type: 'navaid' as const, name: n.name, lat: n.lat, lon: n.lon, elev: n.elevation })),
+          ...reportingPoints.map(rp => ({ type: 'reporting-point' as const, name: rp.name, lat: rp.lat, lon: rp.lon, elev: rp.elevation })),
           ...locations.map(l => ({ type: 'location' as const, name: l.n, lat: l.lat, lon: l.lon, elev: l.elev })),
           ...peaks.map(p => ({ type: 'peak' as const, name: p.name, lat: p.lat, lon: p.lon, elev: p.ele })),
         ];
@@ -271,13 +305,15 @@ export function useAeroData() {
         .filter(a => a.name.toLowerCase().includes(lowerQuery) || (a.icaoCode?.toUpperCase().includes(upperQuery) ?? false))
         .slice(0, 10);
       const navaids = state.data.navaids.filter(n => n.name.toLowerCase().includes(lowerQuery)).slice(0, 10);
+      const reportingPoints = state.data.reportingPoints.filter(rp => rp.name.toLowerCase().includes(lowerQuery)).slice(0, 10);
 
       return [
         ...airports.map(a => ({ type: 'airport' as const, name: a.name, icao: a.icaoCode, lat: a.lat, lon: a.lon, elev: a.elevation })),
         ...navaids.map(n => ({ type: 'navaid' as const, name: n.name, lat: n.lat, lon: n.lon, elev: n.elevation })),
+        ...reportingPoints.map(rp => ({ type: 'reporting-point' as const, name: rp.name, lat: rp.lat, lon: rp.lon, elev: rp.elevation })),
       ];
     },
-    [state.isOffline, state.hasOfflineData, state.data],
+    [state.isOffline, state.hasOfflineData, state.data]
   );
 
   const searchNearby = useCallback(
@@ -366,17 +402,37 @@ export function useAeroData() {
         elev: a.elevation,
       }));
       const allNavaids = state.data.navaids.map(n => ({ type: 'navaid' as const, name: n.name, lat: n.lat, lon: n.lon, elev: n.elevation }));
+      const allReportingPoints = state.data.reportingPoints.map(rp => ({
+        type: 'reporting-point' as const,
+        name: rp.name,
+        lat: rp.lat,
+        lon: rp.lon,
+        elev: rp.elevation,
+      }));
+
+      // Locations from static JSON (always available in browser)
+      let allLocations: { type: 'location'; name: string; lat: number; lon: number; elev: number }[] = [];
+      try {
+        const locData: { n: string; lat: number; lon: number; elev: number }[] = await fetch('/data/locations.json').then(r => r.json());
+        allLocations = locData.map(l => ({ type: 'location' as const, name: l.n, lat: l.lat, lon: l.lon, elev: l.elev }));
+      } catch {
+        /* ignore */
+      }
 
       const nearA = withinRadius(allAirports);
       const nearN = withinRadius(allNavaids);
+      const nearRP = withinRadius(allReportingPoints);
+      const nearL = withinRadius(allLocations);
 
       const results: NearbySearchResult[] = [
         ...nearA.map(a => ({ ...a, distanceNM: a.distanceNM, bearing: a.bearing })),
         ...nearN.map(n => ({ ...n, distanceNM: n.distanceNM, bearing: n.bearing })),
+        ...nearRP.map(r => ({ ...r, distanceNM: r.distanceNM, bearing: r.bearing })),
+        ...nearL.map(l => ({ ...l, distanceNM: l.distanceNM, bearing: l.bearing })),
       ];
       return results.sort((a, b) => a.distanceNM - b.distanceNM);
     },
-    [state.isOffline, state.hasOfflineData, state.data],
+    [state.isOffline, state.hasOfflineData, state.data]
   );
 
   return {
@@ -388,7 +444,7 @@ export function useAeroData() {
 }
 
 export type WaypointSearchResult = {
-  type: 'airport' | 'navaid' | 'location' | 'peak';
+  type: 'airport' | 'navaid' | 'reporting-point' | 'location' | 'peak';
   name: string;
   icao?: string | null;
   lat: number;

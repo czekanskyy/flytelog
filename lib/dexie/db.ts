@@ -56,6 +56,15 @@ interface PeakRecord {
   ele: number;
 }
 
+interface ReportingPointRecord {
+  openaipId: string;
+  name: string;
+  type: number;
+  lat: number;
+  lon: number;
+  elevation?: number;
+}
+
 interface SyncMeta {
   id: string;
   lastDownload: Date;
@@ -66,6 +75,7 @@ const db = new Dexie('flytelogAero') as Dexie & {
   airspaces: EntityTable<AirspaceRecord, 'openaipId'>;
   navaids: EntityTable<NavaidRecord, 'openaipId'>;
   obstacles: EntityTable<ObstacleRecord, 'openaipId'>;
+  reportingPoints: EntityTable<ReportingPointRecord, 'openaipId'>;
   locations: EntityTable<LocationRecord, 'n'>;
   peaks: EntityTable<PeakRecord, 'id'>;
   syncMeta: EntityTable<SyncMeta, 'id'>;
@@ -81,5 +91,9 @@ db.version(1).stores({
   syncMeta: 'id',
 });
 
+db.version(2).stores({
+  reportingPoints: 'openaipId, name, [lat+lon]',
+});
+
 export { db };
-export type { AirportRecord, AirspaceRecord, NavaidRecord, ObstacleRecord, LocationRecord, PeakRecord, SyncMeta };
+export type { AirportRecord, AirspaceRecord, NavaidRecord, ObstacleRecord, ReportingPointRecord, LocationRecord, PeakRecord, SyncMeta };

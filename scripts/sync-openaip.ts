@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 const API_KEY = process.env.OPENAIP_API_KEY;
 const BASE_URL = 'https://api.core.openaip.net/api';
 const HEADERS = {
-  'x-openaip-client-id': API_KEY || '',
+  'x-openaip-api-key': API_KEY || '',
   Accept: 'application/json',
 };
 

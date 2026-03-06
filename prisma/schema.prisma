@@ -134,7 +134,7 @@ model ReportingPoint {
   id        String   @id @default(cuid())
   openaipId String   @unique
   name      String
-  type      Int
+  type      Int?
   lat       Float
   lon       Float
   elevation Float?
@@ -150,4 +150,23 @@ model SyncLog {
   syncedAt     DateTime @default(now())
   itemsUpdated Int
   source       String
+}
+
+model AirspacePlan {
+  id         String   @id @default(cuid())
+  planDate   DateTime // UTC midnight of the day this plan is valid for
+  planType   String   // 'AUP' | 'UUP'
+  designator String   // normalised, e.g. "EPTS3F"
+  lowerLimit String   // e.g. "GND", "F095", "A020"
+  upperLimit String   // e.g. "F245", "A061"
+  validFrom  String   // HH:mm time string
+  validTo    String   // HH:mm time string
+  unit       String?  // controlling unit, e.g. "EPDE"
+  fuaStatus  String?  // 'Y' | 'N'
+  remarks    String?
+  syncedAt   DateTime @default(now())
+
+  @@index([planDate])
+  @@index([designator])
+  @@index([planDate, designator])
 }

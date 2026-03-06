@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plane, Navigation, MapPin, Mountain, Crosshair, PlaneTakeoff, PlaneLanding } from 'lucide-react';
+import { X, Plane, Navigation, MapPin, Mountain, Crosshair, PlaneTakeoff, PlaneLanding, Flag, Radio, Triangle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useRoute, toFplCoords } from '@/components/route/route-context';
 import { useAeroData, type NearbySearchResult } from '@/hooks/use-aero-data';
@@ -12,9 +12,10 @@ interface MapClickPanelProps {
   onClose: () => void;
 }
 
-const TYPE_ICONS: Record<string, typeof Plane> = {
+const TYPE_ICONS: Record<string, React.ElementType> = {
   airport: Plane,
-  navaid: Navigation,
+  navaid: Radio,
+  'reporting-point': Triangle,
   location: MapPin,
   peak: Mountain,
 };
@@ -22,8 +23,17 @@ const TYPE_ICONS: Record<string, typeof Plane> = {
 const TYPE_COLORS: Record<string, string> = {
   airport: 'text-sky-500',
   navaid: 'text-emerald-500',
+  'reporting-point': 'text-violet-500',
   location: 'text-amber-500',
   peak: 'text-orange-600',
+};
+
+const TYPE_LABELS: Record<string, string> = {
+  airport: 'Lotnisko',
+  navaid: 'Navaid',
+  'reporting-point': 'Pkt VFR',
+  location: 'Miejscowość',
+  peak: 'Szczyt',
 };
 
 function bearingToCardinal(bearing: number): string {
@@ -56,7 +66,7 @@ export function MapClickPanel({ clickedPoint, onClose }: MapClickPanelProps) {
   const handleAddPoint = useCallback(
     (
       point: { name: string; lat: number; lon: number; elev?: number | null; type: NearbySearchResult['type'] | 'custom' },
-      role: 'departure' | 'waypoint' | 'destination',
+      role: 'departure' | 'waypoint' | 'destination'
     ) => {
       const wp = { name: point.name, lat: point.lat, lon: point.lon, elev: point.elev, type: point.type };
 
@@ -66,7 +76,7 @@ export function MapClickPanel({ clickedPoint, onClose }: MapClickPanelProps) {
 
       onClose();
     },
-    [setDeparture, setDestination, addEnroute, onClose],
+    [setDeparture, setDestination, addEnroute, onClose]
   );
 
   if (!clickedPoint) return null;
@@ -148,10 +158,27 @@ export function MapClickPanel({ clickedPoint, onClose }: MapClickPanelProps) {
                   <div className='flex items-start gap-2 mb-2'>
                     <Icon className={`h-4 w-4 mt-0.5 shrink-0 ${colorClass}`} />
                     <div className='flex-1 min-w-0'>
-                      <p className='text-sm font-medium text-slate-800 dark:text-zinc-200 truncate'>
-                        {result.name}
-                        {result.icao && <span className='ml-1 text-xs text-slate-400'>({result.icao})</span>}
-                      </p>
+                      <div className='flex items-center gap-1.5 flex-wrap'>
+                        <p className='text-sm font-medium text-slate-800 dark:text-zinc-200 truncate'>
+                          {result.name}
+                          {result.icao && <span className='ml-1 text-xs text-slate-400'>({result.icao})</span>}
+                        </p>
+                        <span
+                          className={`text-[9px] font-semibold uppercase px-1.5 py-0.5 rounded-full shrink-0 ${
+                            result.type === 'airport'
+                              ? 'bg-sky-100 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400'
+                              : result.type === 'navaid'
+                              ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400'
+                              : result.type === 'reporting-point'
+                              ? 'bg-violet-100 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400'
+                              : result.type === 'peak'
+                              ? 'bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400'
+                              : 'bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400'
+                          }`}
+                        >
+                          {TYPE_LABELS[result.type] ?? result.type}
+                        </span>
+                      </div>
                       <p className='text-[11px] text-slate-400 dark:text-zinc-500'>
                         {result.distanceNM.toFixed(1)} NM · {bearingToCardinal(result.bearing)} ({Math.round(result.bearing)}°)
                         {result.elev != null && ` · ${Math.round(result.elev)} ft`}

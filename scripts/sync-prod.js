@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 const API_KEY = process.env.OPENAIP_API_KEY || 'dfe9f5266c3df032f5c998e0ed1965dc';
 const BASE_URL = 'https://api.core.openaip.net/api';
 const HEADERS = {
-  'x-openaip-client-id': API_KEY,
+  'x-openaip-api-key': API_KEY,
   Accept: 'application/json',
 };
 
@@ -99,6 +99,46 @@ async function sync() {
       }
     });
     console.log('Airspaces saved.');
+
+    // 4. Reporting Points
+    console.log('Fetching reporting points...');
+    const reportingPoints = await fetchPaginated('/reporting-points');
+    console.log(`Saving ${reportingPoints.length} reporting points...`);
+    await prisma.$transaction(async tx => {
+      await tx.reportingPoint.deleteMany();
+      const records = reportingPoints.map(rp => ({
+        openaipId: rp._id,
+        name: rp.name,
+        type: rp.type ?? null,
+        lat: rp.geometry.coordinates[1],
+        lon: rp.geometry.coordinates[0],
+        elevation: rp.elevation?.value,
+        country: rp.country ?? 'PL',
+      }));
+      await tx.reportingPoint.createMany({ data: records });
+    });
+    console.log('Reporting points saved.');
+
+    // 5. Obstacles
+    console.log('Fetching obstacles...');
+    const obstacles = await fetchPaginated('/obstacles');
+    console.log(`Saving ${obstacles.length} obstacles...`);
+    await prisma.$transaction(async tx => {
+      await tx.obstacle.deleteMany();
+      const records = obstacles.map(o => ({
+        openaipId: o._id,
+        type: o.type,
+        lat: o.geometry.coordinates[1],
+        lon: o.geometry.coordinates[0],
+        elevation: o.elevation?.value ?? 0,
+        heightAgl: o.heightAgl ?? 0,
+        country: o.country ?? 'PL',
+      }));
+      for (const chunk of chunkArray(records, 100)) {
+        await tx.obstacle.createMany({ data: chunk });
+      }
+    });
+    console.log('Obstacles saved.');
 
     console.log('--- SYNC COMPLETE ---');
   } catch (err) {

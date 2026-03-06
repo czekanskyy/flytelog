@@ -38,6 +38,7 @@
     "errors": {
       "notApproved": "Your account is awaiting admin approval",
       "expired": "Your account has expired. Contact the administrator.",
+      "userNotFound": "No account found with that email or username",
       "invalidCredentials": "Invalid email/username or password",
       "emailTaken": "Email is already taken",
       "usernameTaken": "Username is already taken"
@@ -182,6 +183,13 @@
     "mapObjects": "Map objects",
     "airports": "Airports",
     "navaids": "Navaids",
-    "obstacles": "Obstacles"
+    "obstacles": "Obstacles",
+    "reportingPoints": "VFR Reporting Points",
+    "dynamicAirspaces": "Dynamic (AUP)",
+    "staticAirspaces": "Static",
+    "otherAirspaces": "Informational",
+    "aupSync": "Sync AUP",
+    "aupSyncing": "Syncing…",
+    "aupLastSync": "Synced"
   }
 }
