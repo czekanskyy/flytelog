@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { Plane, Send, CheckCircle2 } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { Turnstile } from "@marsidev/react-turnstile"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -97,6 +98,9 @@ export default function RegisterPage() {
               autoComplete="email"
               className="h-11 bg-slate-50/50 dark:bg-zinc-800/50 border-slate-200 dark:border-zinc-700 focus:bg-white dark:focus:bg-zinc-800"
             />
+          </div>
+          <div className="flex justify-center py-2">
+            <Turnstile siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'} options={{ theme: 'auto' }} />
           </div>
           <Button
             type="submit"

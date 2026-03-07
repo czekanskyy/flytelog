@@ -146,19 +146,25 @@ export async function requestEmailChange(formData: FormData) {
       return { success: false, error: 'This email is already in use by another account' };
     }
 
-    // 1. Generate token
+    // 1. Rate Limiting Check (max 2 active requests per user in the last 1 hour)
+    const recentRequests = await prisma.verificationToken.count({
+      where: {
+        identifier: { startsWith: `email-change:${session.user.id}:` },
+        expires: { gt: new Date() }
+      }
+    });
+
+    if (recentRequests >= 2) {
+      return { success: false, error: 'Too many requests. Please try again later.' };
+    }
+
+    // 2. Generate token
     const token = randomBytes(32).toString('hex');
     const hashedToken = createHash('sha256').update(token).digest('hex');
     
     // Identifier convention: email-change:USER_ID:NEW_EMAIL
+    // Note: We deliberately DO NOT delete old requests here, so they accumulate and serve as our rate-limit counter!
     const identifier = `email-change:${session.user.id}:${newEmail}`;
-
-    // 2. Clear old change requests for this user
-    await prisma.verificationToken.deleteMany({
-      where: { 
-        identifier: { startsWith: `email-change:${session.user.id}:` }
-      }
-    });
 
     // 3. Save new request (expires in 1h)
     await prisma.verificationToken.create({
@@ -225,8 +231,10 @@ export async function confirmEmailChange(token: string, identifier: string) {
       data: { email: newEmail },
     });
 
-    // Delete used token
-    await prisma.verificationToken.deleteMany({ where: { identifier } });
+    // Delete all used/leftover tokens for this specific user's email changes (clean up)
+    await prisma.verificationToken.deleteMany({ 
+      where: { identifier: { startsWith: `email-change:${userId}:` } } 
+    });
 
     await unstable_update({
       user: {

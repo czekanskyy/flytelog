@@ -23,6 +23,32 @@ function hashToken(raw: string) {
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
 
+async function verifyTurnstileToken(token: string | null): Promise<boolean> {
+  if (!token) return false;
+  
+  const secretKey = process.env.TURNSTILE_SECRET_KEY;
+  if (!secretKey) {
+    console.warn("[Turnstile] Missing TURNSTILE_SECRET_KEY. Bypassing validation (NOT SECURE FOR PRODUCTION).");
+    return true; 
+  }
+
+  const fd = new URLSearchParams();
+  fd.append('secret', secretKey);
+  fd.append('response', token);
+
+  try {
+    const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      body: fd,
+    });
+    const data = await res.json();
+    return !!data.success;
+  } catch (err) {
+    console.error("[Turnstile] verification crashed:", err);
+    return false;
+  }
+}
+
 // ─── Schemas ──────────────────────────────────────────────────────────────────
 
 const emailSchema = z.object({
@@ -70,36 +96,52 @@ export type AuthResult = {
  * Step 1: Accepts an email, sends a magic link for registration.
  */
 export async function initiateRegistration(formData: FormData): Promise<AuthResult> {
+  const turnstileToken = formData.get('cf-turnstile-response') as string | null;
+  const isHuman = await verifyTurnstileToken(turnstileToken);
+  
+  if (!isHuman) {
+    return { success: false, error: 'Anti-spam check failed. Please verify you are a human.' };
+  }
+
   const parsed = emailSchema.safeParse({ email: formData.get('email') });
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
   }
 
-  const email = parsed.data.email.toLowerCase();
+  const normalizedEmail = parsed.data.email.toLowerCase();
 
-  const existingUser = await prisma.user.findUnique({ where: { email } });
+  const existingUser = await prisma.user.findUnique({ where: { email: normalizedEmail } });
   if (existingUser) {
     return { success: false, error: 'An account with this email already exists. Please sign in.' };
   }
 
-  // Remove any existing registration token for this email
-  await prisma.verificationToken.deleteMany({
-    where: { identifier: `register:${email}` },
+  // Rate Limiting Check: Max 2 registration emails per hour for this email address
+  const recentRequests = await prisma.verificationToken.count({
+    where: {
+      identifier: `register:${normalizedEmail}`,
+      expires: { gt: new Date() }
+    }
   });
 
+  if (recentRequests >= 2) {
+    return { success: false, error: 'Too many registration attempts for this email. Please try again later (after 1 hour).' };
+  }
+
+  // We deliberately do NOT delete old tokens. They accumulate to act as our rate limiter history!
+  
   const { raw, hash } = generateToken();
   const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
   await prisma.verificationToken.create({
     data: {
-      identifier: `register:${email}`,
+      identifier: `register:${normalizedEmail}`,
       token: hash,
       expires,
     },
   });
 
-  const magicLink = `${appUrl}/register/complete?token=${raw}&email=${encodeURIComponent(email)}`;
-  void sendRegistrationEmail(email, magicLink);
+  const magicLink = `${appUrl}/register/complete?token=${raw}&email=${encodeURIComponent(normalizedEmail)}`;
+  void sendRegistrationEmail(normalizedEmail, magicLink);
 
   return { success: true };
 }
@@ -166,8 +208,8 @@ export async function completeRegistration(
     },
   });
 
-  // Delete used token
-  await prisma.verificationToken.delete({ where: { token: tokenHash } });
+  // Delete ALL used/leftover tokens for this registration intent (cleanup)
+  await prisma.verificationToken.deleteMany({ where: { identifier: `register:${normalizedEmail}` } });
 
   // Send welcome email — non-blocking
   void sendWelcomeEmail(normalizedEmail, firstName);
@@ -220,33 +262,52 @@ export async function loginUser(formData: FormData): Promise<AuthResult> {
  * Initiates a password reset. Always returns success (anti-enumeration).
  */
 export async function initiatePasswordReset(formData: FormData): Promise<AuthResult> {
+  const turnstileToken = formData.get('cf-turnstile-response') as string | null;
+  const isHuman = await verifyTurnstileToken(turnstileToken);
+  
+  if (!isHuman) {
+    return { success: false, error: 'Anti-spam check failed. Please verify you are a human.' };
+  }
+
   const parsed = emailSchema.safeParse({ email: formData.get('email') });
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
   }
 
-  const email = parsed.data.email.toLowerCase();
-  const user = await prisma.user.findUnique({ where: { email } });
+  const normalizedEmail = parsed.data.email.toLowerCase();
+  
+  // Rate Limiting Check for Password Reset (Even if user doesn't exist, we prevent spamming the endpoint)
+  // Max 2 reset requests per email per hour.
+  const recentRequests = await prisma.verificationToken.count({
+    where: {
+      identifier: `reset:${normalizedEmail}`,
+      expires: { gt: new Date() }
+    }
+  });
+
+  if (recentRequests >= 2) {
+    // Return a generic success to prevent email enumeration, but do not actually send the email.
+    return { success: true };
+  }
+
+  const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
 
   if (user) {
-    // Remove existing reset token
-    await prisma.verificationToken.deleteMany({
-      where: { identifier: `reset:${email}` },
-    });
-
+    // We deliberately do NOT delete old tokens. They accumulate to act as our rate limiter history!
+    
     const { raw, hash } = generateToken();
     const expires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
 
     await prisma.verificationToken.create({
       data: {
-        identifier: `reset:${email}`,
+        identifier: `reset:${normalizedEmail}`,
         token: hash,
         expires,
       },
     });
 
-    const resetLink = `${appUrl}/reset-password?token=${raw}&email=${encodeURIComponent(email)}`;
-    void sendPasswordResetEmail(email, resetLink, user.firstName);
+    const resetLink = `${appUrl}/reset-password?token=${raw}&email=${encodeURIComponent(normalizedEmail)}`;
+    void sendPasswordResetEmail(normalizedEmail, resetLink, user.firstName);
   }
 
   // Always return success (anti-enumeration)
@@ -293,8 +354,8 @@ export async function resetPassword(
     data: { password: hashedPassword },
   });
 
-  // Delete used token
-  await prisma.verificationToken.delete({ where: { token: tokenHash } });
+  // Delete ALL used/leftover tokens for this reset intent (cleanup)
+  await prisma.verificationToken.deleteMany({ where: { identifier: `reset:${email.toLowerCase()}` } });
 
   return { success: true };
 }
