@@ -1,10 +1,7 @@
-import { Resend } from 'resend';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-const FROM = 'flyteLog <noreply@flytelog.app>';
-
-function welcomeEmailHtml(firstName: string): string {
+/**
+ * Welcome email template — sent after successful registration.
+ */
+export function welcomeEmailHtml(firstName: string): string {
   return /* html */`
 <!DOCTYPE html>
 <html lang="en">
@@ -108,7 +105,7 @@ function welcomeEmailHtml(firstName: string): string {
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center">
-                    <a href="https://flytelog.app/login"
+                    <a href="${process.env.NEXT_PUBLIC_APP_URL ?? 'https://flytelog.app'}/login"
                        style="display:inline-block;background-color:#0ea5e9;color:#ffffff;text-decoration:none;font-size:15px;font-weight:600;padding:13px 32px;border-radius:10px;letter-spacing:0.1px;">
                       Open flyteLog →
                     </a>
@@ -141,16 +138,5 @@ function welcomeEmailHtml(firstName: string): string {
   `.trim();
 }
 
-export async function sendWelcomeEmail(to: string, firstName: string): Promise<void> {
-  const { error } = await resend.emails.send({
-    from: FROM,
-    to,
-    subject: `Welcome to flyteLog, ${firstName}! ✈️`,
-    html: welcomeEmailHtml(firstName),
-  });
-
-  if (error) {
-    // Logujemy błąd, ale nie blokujemy rejestracji — user i tak może się zalogować
-    console.error('[email] Failed to send welcome email:', error);
-  }
-}
+export const welcomeEmailSubject = (firstName: string) =>
+  `Welcome to flyteLog, ${firstName}! ✈️`;

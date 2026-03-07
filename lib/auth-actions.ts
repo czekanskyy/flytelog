@@ -6,7 +6,7 @@ import { signIn } from '@/lib/auth';
 import { registerSchema, loginSchema } from '@/lib/schemas';
 import { getRandomAvatarColor } from '@/lib/avatar';
 import { AuthError } from 'next-auth';
-import { sendWelcomeEmail } from '@/lib/email';
+import { sendWelcomeEmail } from '@/lib/emails';
 
 export type AuthResult = {
   success: boolean;
