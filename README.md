@@ -15,14 +15,14 @@ Whether you're a student pilot tracking your first hours, or an experienced avia
 
 ## 🛠️ Tech Stack
 
-| Layer          | Technology                                      |
-| -------------- | ----------------------------------------------- |
-| Framework      | [Next.js](https://nextjs.org)                   |
-| Styling        | [Tailwind CSS](https://tailwindcss.com)         |
-| UI Components  | [shadcn/ui](https://ui.shadcn.com)              |
-| ORM            | [Prisma](https://prisma.io)                     |
-| Authentication | [Auth.js](https://authjs.dev)                   |
-| Database       | [PostgreSQL](https://www.postgresql.org)        |
+| Layer          | Technology                               |
+| -------------- | ---------------------------------------- |
+| Framework      | [Next.js](https://nextjs.org)            |
+| Styling        | [Tailwind CSS](https://tailwindcss.com)  |
+| UI Components  | [shadcn/ui](https://ui.shadcn.com)       |
+| ORM            | [Prisma](https://prisma.io)              |
+| Authentication | [Auth.js](https://authjs.dev)            |
+| Database       | [PostgreSQL](https://www.postgresql.org) |
 
 ## 📋 Roadmap
 
@@ -59,6 +59,9 @@ cp .env.example .env
 # Run database migrations
 bunx prisma migrate dev
 
+# Generate the db
+bunx prisma generate
+
 # Start the development server
 bun dev
 ```
@@ -70,10 +73,12 @@ The app will be available at [http://localhost:3000](http://localhost:3000).
 This project is licensed under the **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)**.
 
 You are free to:
+
 - **Share** — copy and redistribute the material in any medium or format
 - **Adapt** — remix, transform, and build upon the material
 
 Under the following terms:
+
 - **Attribution** — You must give appropriate credit and indicate if changes were made.
 - **NonCommercial** — You may not use the material for commercial purposes without explicit permission from the author.
 - **ShareAlike** — If you remix or build upon the material, you must distribute your contributions under the same license.
