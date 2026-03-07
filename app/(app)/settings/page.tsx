@@ -6,6 +6,8 @@ import { SecurityForm } from "./security-form"
 import { EmailForm } from "./email-form"
 import { Settings, Wrench } from "lucide-react"
 
+import { prisma } from "@/lib/prisma"
+
 export const metadata = {
   title: "Settings | flyteLog",
   description: "Manage your account settings",
@@ -15,16 +17,26 @@ export default async function SettingsPage() {
   const session = await auth()
   const t = await getTranslations("settings")
 
-  if (!session?.user) {
+  if (!session?.user?.id) {
+    redirect("/login")
+  }
+
+  // Fetch the absolute latest fresh data from the DB 
+  // because the JWT session token might be stale after updates.
+  const dbUser = await prisma.user.findUnique({
+    where: { id: session.user.id }
+  })
+
+  if (!dbUser) {
     redirect("/login")
   }
 
   // Pass user data to client components
   const user = {
-    firstName: session.user.firstName,
-    lastName: session.user.lastName,
-    username: session.user.username,
-    email: session.user.email,
+    firstName: dbUser.firstName,
+    lastName: dbUser.lastName,
+    username: dbUser.username,
+    email: dbUser.email,
   }
 
   return (

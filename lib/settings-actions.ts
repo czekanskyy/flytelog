@@ -5,6 +5,7 @@ import { auth } from '@/lib/auth';
 import { z } from 'zod';
 import { randomBytes, createHash } from 'crypto';
 import bcrypt from 'bcryptjs';
+import { revalidatePath } from 'next/cache';
 
 const profileSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
@@ -50,6 +51,7 @@ export async function updateProfile(formData: FormData) {
       },
     });
 
+    revalidatePath('/settings');
     return { success: true };
   } catch (error) {
     console.error('[Settings] Update Profile:', error);
@@ -96,6 +98,7 @@ export async function updatePassword(formData: FormData) {
       data: { password: hashedPassword },
     });
 
+    revalidatePath('/settings');
     return { success: true };
   } catch (error) {
     console.error('[Settings] Update Password:', error);
@@ -207,6 +210,7 @@ export async function confirmEmailChange(token: string, identifier: string) {
     // Delete used token
     await prisma.verificationToken.deleteMany({ where: { identifier } });
 
+    revalidatePath('/settings');
     return { success: true, email: newEmail };
   } catch (error) {
     console.error('[Settings] Confirm Email Change:', error);
