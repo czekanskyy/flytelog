@@ -32,8 +32,8 @@
       "hasAccount": "Masz już konto?",
       "signIn": "Zaloguj się",
       "successTitle": "Konto utworzone!",
-      "successMessage": "Twoje konto czeka na zatwierdzenie przez administratora. Będziesz mógł się zalogować po potwierdzeniu rejestracji.",
-      "backToLogin": "Wróć do logowania"
+      "successMessage": "Twoje konto zostało utworzone. Możesz się teraz zalogować.",
+      "backToLogin": "Zaloguj się"
     },
     "errors": {
       "notApproved": "Twoje konto oczekuje na zatwierdzenie przez administratora",
@@ -46,14 +46,14 @@
   },
   "admin": {
     "title": "Zarządzanie użytkownikami",
-    "subtitle": "Zatwierdzaj nowe rejestracje i zarządzaj istniejącymi kontami.",
-    "pending": {
-      "title": "Oczekujące na zatwierdzenie",
-      "empty": "Brak oczekujących rejestracji"
-    },
-    "approved": {
-      "title": "Zatwierdzeni użytkownicy",
-      "empty": "Brak zatwierdzonych użytkowników"
+    "subtitle": "Przeglądaj i zarządzaj wszystkimi kontami użytkowników.",
+    "users": {
+      "title": "Wszyscy użytkownicy",
+      "empty": "Brak użytkowników",
+      "deleteTitle": "Usuń użytkownika",
+      "deleteConfirm": "Czy na pewno chcesz usunąć {name}? Tej operacji nie można cofnąć.",
+      "deleteSuccess": "{name} został usunięty.",
+      "deleteError": "Nie udało się usunąć użytkownika. Spróbuj ponownie."
     },
     "table": {
       "user": "Użytkownik",
@@ -61,11 +61,7 @@
       "email": "Email",
       "registered": "Rejestracja",
       "role": "Rola",
-      "expires": "Wygasa",
-      "never": "Nigdy",
-      "actions": "Akcje",
-      "approve": "Zatwierdź",
-      "reject": "Odrzuć"
+      "actions": "Akcje"
     },
     "signOut": "Wyloguj się"
   },

@@ -12,27 +12,9 @@ async function requireAdmin() {
   return session
 }
 
-export async function getPendingUsers() {
+export async function getAllUsers() {
   await requireAdmin()
   return prisma.user.findMany({
-    where: { approved: false },
-    orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      firstName: true,
-      lastName: true,
-      username: true,
-      email: true,
-      avatarColor: true,
-      createdAt: true,
-    },
-  })
-}
-
-export async function getApprovedUsers() {
-  await requireAdmin()
-  return prisma.user.findMany({
-    where: { approved: true },
     orderBy: { createdAt: "desc" },
     select: {
       id: true,
@@ -42,23 +24,33 @@ export async function getApprovedUsers() {
       email: true,
       role: true,
       avatarColor: true,
-      expiresAt: true,
       createdAt: true,
     },
   })
 }
 
-export async function approveUser(userId: string) {
-  await requireAdmin()
-  await prisma.user.update({
-    where: { id: userId },
-    data: { approved: true },
-  })
-}
+export async function deleteUser(userId: string): Promise<{ success: boolean; error?: string }> {
+  const session = await requireAdmin()
 
-export async function rejectUser(userId: string) {
-  await requireAdmin()
-  await prisma.user.delete({
+  // Zabezpieczenie: admin nie może usunąć samego siebie
+  if (session.user.id === userId) {
+    return { success: false, error: "You cannot delete your own account" }
+  }
+
+  // Zabezpieczenie: sprawdzamy czy target user istnieje i nie jest ADMINem
+  const targetUser = await prisma.user.findUnique({
     where: { id: userId },
+    select: { id: true, role: true },
   })
+
+  if (!targetUser) {
+    return { success: false, error: "User not found" }
+  }
+
+  if (targetUser.role === "ADMIN") {
+    return { success: false, error: "Cannot delete another admin account" }
+  }
+
+  await prisma.user.delete({ where: { id: userId } })
+  return { success: true }
 }

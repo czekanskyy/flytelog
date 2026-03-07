@@ -32,8 +32,8 @@
       "hasAccount": "Already have an account?",
       "signIn": "Sign in",
       "successTitle": "Account created!",
-      "successMessage": "Your account is awaiting admin approval. You'll be able to sign in once an administrator confirms your registration.",
-      "backToLogin": "Back to sign in"
+      "successMessage": "Your account has been created. You can now sign in.",
+      "backToLogin": "Sign in"
     },
     "errors": {
       "notApproved": "Your account is awaiting admin approval",
@@ -46,14 +46,14 @@
   },
   "admin": {
     "title": "User Management",
-    "subtitle": "Approve new registrations and manage existing accounts.",
-    "pending": {
-      "title": "Pending Approval",
-      "empty": "No pending registrations"
-    },
-    "approved": {
-      "title": "Approved Users",
-      "empty": "No approved users yet"
+    "subtitle": "View and manage all user accounts.",
+    "users": {
+      "title": "All Users",
+      "empty": "No users found",
+      "deleteTitle": "Delete user",
+      "deleteConfirm": "Are you sure you want to delete {name}? This action cannot be undone.",
+      "deleteSuccess": "{name} has been deleted.",
+      "deleteError": "Failed to delete user. Please try again."
     },
     "table": {
       "user": "User",
@@ -61,11 +61,7 @@
       "email": "Email",
       "registered": "Registered",
       "role": "Role",
-      "expires": "Expires",
-      "never": "Never",
-      "actions": "Actions",
-      "approve": "Approve",
-      "reject": "Reject"
+      "actions": "Actions"
     },
     "signOut": "Sign out"
   },

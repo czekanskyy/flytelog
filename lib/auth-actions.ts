@@ -87,18 +87,6 @@ export async function loginUser(formData: FormData): Promise<AuthResult> {
     return { success: true };
   } catch (error) {
     if (error instanceof AuthError) {
-      if (error.cause?.err?.message === 'ACCOUNT_NOT_APPROVED') {
-        return {
-          success: false,
-          error: 'Your account is awaiting admin approval',
-        };
-      }
-      if (error.cause?.err?.message === 'ACCOUNT_EXPIRED') {
-        return {
-          success: false,
-          error: 'Your account has expired. Contact the administrator.',
-        };
-      }
       return { success: false, error: 'Invalid email/username or password' };
     }
     throw error;

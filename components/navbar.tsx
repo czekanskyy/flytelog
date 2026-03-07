@@ -29,7 +29,6 @@ type NavbarProps = {
     email: string;
     avatarColor: string;
     role: string;
-    expiresAt: Date | null;
   };
 };
 
@@ -111,22 +110,6 @@ export function Navbar({ user }: NavbarProps) {
                     <p className='text-xs leading-none text-slate-500 dark:text-zinc-400 italic'>{user.username}</p>
                     <p className='text-xs leading-none text-slate-500 dark:text-zinc-400'>{user.email}</p>
                   </div>
-                  {user.expiresAt && (
-                    <div className='mt-2 text-xs text-slate-500 dark:text-zinc-400'>
-                      {t('nav.validUntil')}:<br />
-                      <span className='font-medium text-slate-700 dark:text-zinc-300'>
-                        {format.dateTime(new Date(user.expiresAt), {
-                          weekday: 'short',
-                          day: '2-digit',
-                          month: '2-digit',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          hour12: false,
-                        })}
-                      </span>
-                    </div>
-                  )}
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild className='cursor-pointer gap-2'>
