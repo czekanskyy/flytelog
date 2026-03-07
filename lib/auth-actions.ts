@@ -6,6 +6,7 @@ import { signIn } from '@/lib/auth';
 import { registerSchema, loginSchema } from '@/lib/schemas';
 import { getRandomAvatarColor } from '@/lib/avatar';
 import { AuthError } from 'next-auth';
+import { sendWelcomeEmail } from '@/lib/email';
 
 export type AuthResult = {
   success: boolean;
@@ -52,6 +53,9 @@ export async function registerUser(formData: FormData): Promise<AuthResult> {
       avatarColor: getRandomAvatarColor(),
     },
   });
+
+  // Wysyłamy welcome email — nie blokujemy rejestracji jeśli się nie uda
+  void sendWelcomeEmail(email.toLowerCase(), firstName);
 
   return { success: true };
 }
