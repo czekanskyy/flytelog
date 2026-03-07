@@ -182,6 +182,48 @@
     "loginRequired": "Email lub nazwa użytkownika jest wymagana",
     "passwordRequired": "Hasło jest wymagane"
   },
+  "settings": {
+    "title": "Ustawienia konta",
+    "subtitle": "Zarządzaj swoim profilem, bezpieczeństwem i preferencjami",
+    "profile": {
+      "title": "Profil",
+      "subtitle": "Zaktualizuj swoje dane osobowe",
+      "firstName": "Imię",
+      "lastName": "Nazwisko",
+      "username": "Nazwa użytkownika",
+      "save": "Zapisz zmiany",
+      "saving": "Zapisywanie...",
+      "success": "Profil został pomyślnie zaktualizowany",
+      "error": "Nie udało się zaktualizować profilu"
+    },
+    "security": {
+      "title": "Bezpieczeństwo",
+      "subtitle": "Zaktualizuj swoje hasło i zabezpiecz konto",
+      "currentPassword": "Obecne hasło",
+      "newPassword": "Nowe hasło",
+      "confirmPassword": "Potwierdź nowe hasło",
+      "save": "Zaktualizuj hasło",
+      "saving": "Aktualizacja...",
+      "success": "Hasło zostało pomyślnie zaktualizowane",
+      "error": "Nie udało się zaktualizować hasła"
+    },
+    "email": {
+      "title": "Adres Email",
+      "subtitle": "Zmień adres email powiązany ze swoim kontem",
+      "current": "Obecny email",
+      "new": "Nowy adres email",
+      "requestChange": "Zmień adres email",
+      "requesting": "Wysyłanie...",
+      "checkEmail": "Sprawdź skrzynkę nowego adresu email w poszukiwaniu linku weryfikacyjnego.",
+      "success": "Wysłano link weryfikacyjny! Sprawdź nową skrzynkę.",
+      "error": "Nie udało się zażądać zmiany emaila",
+      "verifyTitle": "Weryfikacja nowego emaila",
+      "verifyDesc": "Weryfikujemy twój nowy adres email...",
+      "verifySuccess": "Twój adres email został pomyślnie zaktualizowany.",
+      "verifyError": "Link weryfikacyjny jest nieprawidłowy lub wygasł.",
+      "backToSettings": "Wróć do ustawień"
+    }
+  },
   "map": {
     "settings": "Ustawienia mapy",
     "layers": "Warstwy",

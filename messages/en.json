@@ -182,6 +182,48 @@
     "loginRequired": "Email or username is required",
     "passwordRequired": "Password is required"
   },
+  "settings": {
+    "title": "Account Settings",
+    "subtitle": "Manage your profile, security, and preferences",
+    "profile": {
+      "title": "Profile",
+      "subtitle": "Update your personal information",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "username": "Username",
+      "save": "Save changes",
+      "saving": "Saving...",
+      "success": "Profile updated successfully",
+      "error": "Failed to update profile"
+    },
+    "security": {
+      "title": "Security",
+      "subtitle": "Update your password and secure your account",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "save": "Update password",
+      "saving": "Updating...",
+      "success": "Password updated successfully",
+      "error": "Failed to update password"
+    },
+    "email": {
+      "title": "Email Address",
+      "subtitle": "Change the email address associated with your account",
+      "current": "Current email",
+      "new": "New email address",
+      "requestChange": "Request email change",
+      "requesting": "Requesting...",
+      "checkEmail": "Check your new email inbox for a verification link to complete the change.",
+      "success": "Verification link sent! Check your new inbox.",
+      "error": "Failed to request email change",
+      "verifyTitle": "Verify Email Change",
+      "verifyDesc": "We're verifying your new email address...",
+      "verifySuccess": "Your email address has been successfully updated.",
+      "verifyError": "Invalid or expired verification link.",
+      "backToSettings": "Back to settings"
+    }
+  },
   "map": {
     "settings": "Map settings",
     "layers": "Layers",

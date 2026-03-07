@@ -2,6 +2,7 @@ import { Resend } from 'resend';
 import { welcomeEmailHtml, welcomeEmailSubject } from './welcome';
 import { registrationEmailHtml, registrationEmailSubject } from './registration';
 import { passwordResetEmailHtml, passwordResetEmailSubject } from './password-reset';
+import { EmailChangeTemplate } from './email-change';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 // Domena czekanski.dev jest zweryfikowana w Resend
@@ -35,4 +36,14 @@ export async function sendPasswordResetEmail(to: string, resetLink: string, firs
     html: passwordResetEmailHtml(firstName, resetLink),
   });
   if (error) console.error('[email] password-reset:', error);
+}
+
+export async function sendEmailChangeConfirmation(email: string, magicLink: string, userName: string): Promise<void> {
+  const { error } = await resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: "Verify your new flyteLog email address",
+    react: EmailChangeTemplate({ magicLink, userName }),
+  });
+  if (error) console.error('[email] email-change:', error);
 }
