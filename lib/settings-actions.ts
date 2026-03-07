@@ -1,7 +1,7 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
-import { auth } from '@/lib/auth';
+import { auth, unstable_update } from '@/lib/auth';
 import { z } from 'zod';
 import { randomBytes, createHash } from 'crypto';
 import bcrypt from 'bcryptjs';
@@ -49,6 +49,14 @@ export async function updateProfile(formData: FormData) {
         lastName: data.lastName,
         username: data.username,
       },
+    });
+
+    await unstable_update({
+      user: {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        username: data.username,
+      }
     });
 
     revalidatePath('/settings');
@@ -114,11 +122,21 @@ export async function requestEmailChange(formData: FormData) {
     }
 
     const newEmail = formData.get('email') as string;
+    const locale = formData.get('locale') as string || 'en';
+
     if (!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
       return { success: false, error: 'Invalid email address' };
     }
 
-    if (newEmail === session.user.email) {
+    const dbUser = await prisma.user.findUnique({
+      where: { id: session.user.id }
+    });
+
+    if (!dbUser) {
+      return { success: false, error: 'User not found' };
+    }
+
+    if (newEmail === dbUser.email) {
       return { success: false, error: 'This is already your current email' };
     }
 
@@ -151,11 +169,11 @@ export async function requestEmailChange(formData: FormData) {
       },
     });
 
-    // 4. Send Email (we will import sendEmailChangeConfirmation later)
+    // 4. Send Email
     const { sendEmailChangeConfirmation } = await import('@/lib/emails');
     const verifyLink = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/settings/verify-email?token=${token}&id=${encodeURIComponent(identifier)}`;
     
-    await sendEmailChangeConfirmation(newEmail, verifyLink, session.user.firstName);
+    await sendEmailChangeConfirmation(newEmail, verifyLink, dbUser.firstName, locale);
 
     return { success: true };
   } catch (error) {
@@ -209,6 +227,12 @@ export async function confirmEmailChange(token: string, identifier: string) {
 
     // Delete used token
     await prisma.verificationToken.deleteMany({ where: { identifier } });
+
+    await unstable_update({
+      user: {
+        email: newEmail,
+      }
+    });
 
     revalidatePath('/settings');
     return { success: true, email: newEmail };

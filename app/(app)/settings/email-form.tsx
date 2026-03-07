@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useTransition, useRef } from "react"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { toast } from "sonner"
 import { Mail, CheckCircle2 } from "lucide-react"
 import { 
@@ -23,6 +23,7 @@ type EmailFormProps = {
 
 export function EmailForm({ initialEmail }: EmailFormProps) {
   const t = useTranslations("settings.email")
+  const locale = useLocale()
   const [isPending, startTransition] = useTransition()
   const [successSent, setSuccessSent] = useState(false)
   const formRef = useRef<HTMLFormElement>(null)
@@ -30,10 +31,10 @@ export function EmailForm({ initialEmail }: EmailFormProps) {
   async function handleSubmit(formData: FormData) {
     const email = formData.get("email") as string
     
-    if (email === initialEmail) {
-      toast.error(t("error") + " - Same email")
-      return
-    }
+    // We remove the strict client-side verification of email === initialEmail
+    // because after the update, `initialEmail` comes from page.tsx passing the new DB data
+    // while the client form state might sometimes lag or re-render unpredictably.
+    // Let the Server Action `requestEmailChange` handle that logic securely.
 
     startTransition(async () => {
       const result = await requestEmailChange(formData)
@@ -93,6 +94,7 @@ export function EmailForm({ initialEmail }: EmailFormProps) {
                 className="bg-zinc-50 dark:bg-zinc-800/50"
               />
             </div>
+            <input type="hidden" name="locale" value={locale} />
           </CardContent>
           <CardFooter className="border-t border-indigo-500/10 dark:border-indigo-500/5 px-6 py-4">
             <Button 

@@ -4,7 +4,7 @@ import { PrismaAdapter } from '@auth/prisma-adapter';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: { strategy: 'jwt' },
   pages: {
@@ -42,7 +42,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         const dbUser = await prisma.user.findUnique({
           where: { id: user.id! },
@@ -56,6 +56,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.email = dbUser.email;
           token.avatarColor = dbUser.avatarColor;
         }
+      }
+      if (trigger === 'update' && session !== null) {
+        if (session.firstName) token.firstName = session.firstName;
+        if (session.lastName) token.lastName = session.lastName;
+        if (session.username) token.username = session.username;
+        if (session.email) token.email = session.email;
+        if (session.avatarColor) token.avatarColor = session.avatarColor;
+        if (session.role) token.role = session.role;
       }
       return token;
     },

@@ -1,13 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ShieldCheck, Settings, HelpCircle, Megaphone, LogOut } from 'lucide-react';
 import { useTranslations, useFormatter } from 'next-intl';
 import { UserAvatar } from '@/components/user-avatar';
 import { ThemeDropdown, LocaleDropdown } from '@/components/nav-dropdowns';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/skeleton';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,13 +33,10 @@ type NavbarProps = {
 export function Navbar({ user }: NavbarProps) {
   const t = useTranslations();
   const format = useFormatter();
-  const [greetingIndex, setGreetingIndex] = useState(-1);
 
-  useEffect(() => {
-    setGreetingIndex(Math.floor(Math.random() * GREETING_COUNT));
-  }, []);
+  // Deterministic "random" greeting based on user ID to prevent hydration mismatch
+  const greetingIndex = user.id ? user.id.charCodeAt(user.id.length - 1) % GREETING_COUNT : 0;
 
-  const isMounted = greetingIndex >= 0;
   const isAdmin = user.role === 'ADMIN';
 
   const navLinks = [
@@ -62,11 +57,7 @@ export function Navbar({ user }: NavbarProps) {
 
           {/* Center — greeting */}
           <div className='absolute inset-x-0 hidden md:flex justify-center pointer-events-none px-48'>
-            {isMounted ? (
-              <p className='text-sm text-slate-500 dark:text-zinc-400 truncate'>{t(`greetings.${greetingIndex}`, { name: user.firstName })}</p>
-            ) : (
-              <Skeleton className='h-4 w-40' />
-            )}
+            <p className='text-sm text-slate-500 dark:text-zinc-400 truncate'>{t(`greetings.${greetingIndex}`, { name: user.firstName })}</p>
           </div>
 
           {/* Right — actions */}
