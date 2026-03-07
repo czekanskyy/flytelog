@@ -89,7 +89,6 @@ export default function LoginPage() {
               <Link 
                 href="/forgot-password" 
                 className="text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 transition-colors"
-                tabIndex={2}
               >
                 {t("forgotPassword")}
               </Link>
