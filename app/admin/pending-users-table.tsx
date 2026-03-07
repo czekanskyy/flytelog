@@ -101,16 +101,18 @@ export function UsersTable({ users: initialUsers }: { users: User[] }) {
                 {new Date(user.createdAt).toLocaleDateString()}
               </TableCell>
               <TableCell className="text-right">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  disabled={isPending && deletingId === user.id}
-                  onClick={() => handleDelete(user.id, `${user.firstName} ${user.lastName}`)}
-                  className="h-8 w-8 p-0 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
-                  title={t("users.deleteTitle")}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                {user.role !== "ADMIN" && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    disabled={isPending && deletingId === user.id}
+                    onClick={() => handleDelete(user.id, `${user.firstName} ${user.lastName}`)}
+                    className="h-8 w-8 p-0 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                    title={t("users.deleteTitle")}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                )}
               </TableCell>
             </TableRow>
           ))}
