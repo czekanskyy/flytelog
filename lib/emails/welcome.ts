@@ -22,7 +22,7 @@ export function welcomeEmailHtml(firstName: string): string {
               <table cellpadding="0" cellspacing="0">
                 <tr>
                   <td style="background-color:#0ea5e920;border:1px solid #0ea5e940;border-radius:16px;padding:14px 20px;">
-                    <span style="font-size:22px;font-weight:700;color:#38bdf8;letter-spacing:-0.5px;">✈️ flyteLog</span>
+                    <span style="font-size:22px;font-weight:700;color:#38bdf8;letter-spacing:-0.5px;">flyteLog</span>
                   </td>
                 </tr>
               </table>
@@ -139,4 +139,4 @@ export function welcomeEmailHtml(firstName: string): string {
 }
 
 export const welcomeEmailSubject = (firstName: string) =>
-  `Welcome to flyteLog, ${firstName}! ✈️`;
+  `Welcome to flyteLog, ${firstName}!`;
