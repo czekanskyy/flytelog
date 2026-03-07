@@ -1,6 +1,6 @@
 "use client"
 
-import { Suspense, useState, useEffect } from "react"
+import { Suspense, useState, useEffect, useRef } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { useTranslations } from "next-intl"
@@ -51,11 +51,15 @@ function VerificationProcess({ token, identifier }: { token: string; identifier:
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading")
   const [errorMessage, setErrorMessage] = useState("")
   const [newEmail, setNewEmail] = useState("")
+  const hasVerified = useRef(false)
 
   useEffect(() => {
     let isMounted = true
 
     async function verify() {
+      if (hasVerified.current) return
+      hasVerified.current = true
+
       const result = await confirmEmailChange(token, identifier)
       if (!isMounted) return
 
