@@ -1,9 +1,9 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { Suspense, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
-import { Plane, CheckCircle2, AlertCircle } from "lucide-react"
+import { Plane, CheckCircle2, AlertCircle, Loader2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -18,18 +18,30 @@ import {
 } from "@/components/ui/card"
 import { completeRegistration } from "@/lib/auth-actions"
 
-type Props = {
-  searchParams: Promise<{ token?: string; email?: string }>
+export default function RegisterCompletePage() {
+  return (
+    <Suspense 
+      fallback={
+        <div className="flex items-center justify-center p-12">
+          <Loader2 className="h-8 w-8 animate-spin text-sky-500" />
+        </div>
+      }
+    >
+      <RegisterCompleteContent />
+    </Suspense>
+  )
 }
 
-export default async function RegisterCompletePage({ searchParams }: Props) {
-  const { token, email } = await searchParams
+function RegisterCompleteContent() {
+  const searchParams = useSearchParams()
+  const token = searchParams.get("token")
+  const email = searchParams.get("email")
 
   if (!token || !email) {
     return <InvalidLink />
   }
 
-  return <CompleteForm token={token} email={decodeURIComponent(email)} />
+  return <CompleteForm token={token} email={email} />
 }
 
 function InvalidLink() {
