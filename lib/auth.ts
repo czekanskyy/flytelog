@@ -4,7 +4,7 @@ import { PrismaAdapter } from '@auth/prisma-adapter';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: { strategy: 'jwt' },
   pages: {
@@ -33,14 +33,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const passwordsMatch = await bcrypt.compare(password, user.password);
         if (!passwordsMatch) return null;
 
-        if (!user.approved) {
-          throw new Error('ACCOUNT_NOT_APPROVED');
-        }
-
-        if (user.expiresAt && user.expiresAt < new Date()) {
-          throw new Error('ACCOUNT_EXPIRED');
-        }
-
         return {
           id: user.id,
           email: user.email,
@@ -50,22 +42,28 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         const dbUser = await prisma.user.findUnique({
           where: { id: user.id! },
-          select: { role: true, approved: true, firstName: true, lastName: true, username: true, avatarColor: true, expiresAt: true, email: true },
+          select: { role: true, firstName: true, lastName: true, username: true, avatarColor: true, email: true },
         });
         if (dbUser) {
           token.role = dbUser.role;
-          token.approved = dbUser.approved;
           token.firstName = dbUser.firstName;
           token.lastName = dbUser.lastName;
           token.username = dbUser.username;
           token.email = dbUser.email;
           token.avatarColor = dbUser.avatarColor;
-          token.expiresAt = dbUser.expiresAt ? dbUser.expiresAt.toISOString() : null;
         }
+      }
+      if (trigger === 'update' && session !== null) {
+        if (session.firstName) token.firstName = session.firstName;
+        if (session.lastName) token.lastName = session.lastName;
+        if (session.username) token.username = session.username;
+        if (session.email) token.email = session.email;
+        if (session.avatarColor) token.avatarColor = session.avatarColor;
+        if (session.role) token.role = session.role;
       }
       return token;
     },
@@ -73,13 +71,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (session.user) {
         session.user.id = token.sub!;
         session.user.role = token.role as string;
-        session.user.approved = token.approved as boolean;
         session.user.firstName = token.firstName as string;
         session.user.lastName = token.lastName as string;
         session.user.username = token.username as string;
         session.user.email = token.email as string;
         session.user.avatarColor = token.avatarColor as string;
-        session.user.expiresAt = token.expiresAt ? new Date(token.expiresAt as string) : null;
       }
       return session;
     },

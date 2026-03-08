@@ -19,8 +19,6 @@ model User {
   email         String    @unique
   password      String
   role          Role      @default(USER)
-  approved      Boolean   @default(false)
-  expiresAt     DateTime?
   avatarColor   String
   emailVerified DateTime?
   createdAt     DateTime  @default(now())

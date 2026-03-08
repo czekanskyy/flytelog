@@ -10,30 +10,71 @@
       "submit": "Sign in",
       "submitting": "Signing in...",
       "noAccount": "Don't have an account?",
-      "createOne": "Create one"
+      "createOne": "Create one",
+      "forgotPassword": "Forgot password?"
     },
     "register": {
       "title": "Create your account",
       "subtitle": "Join flyteLog to start managing your flights",
+      "emailLabel": "Email",
+      "emailPlaceholder": "jan@example.com",
+      "submit": "Send magic link",
+      "submitting": "Sending...",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "checkEmail": "Check your email",
+      "checkEmailDesc": "We've sent a magic link to {email}. Click the link to complete your registration.",
+      "checkEmailExpiry": "This link will expire in 24 hours.",
+      "backToLogin": "Return to sign in",
+      "invalidLink": "Link invalid or expired",
+      "invalidLinkDesc": "This registration link is no longer valid. Please request a new one.",
+      "requestNewLink": "Request new link",
+      
+      "completeTitle": "Complete Registration",
+      "completeSubtitle": "You're almost there! Finish setting up your account.",
       "firstNameLabel": "First Name",
       "firstNamePlaceholder": "Jan",
       "lastNameLabel": "Last Name",
       "lastNamePlaceholder": "Nowak",
       "usernameLabel": "Username",
       "usernamePlaceholder": "jan.nowak",
-      "emailLabel": "Email",
-      "emailPlaceholder": "jan@example.com",
       "passwordLabel": "Password",
       "passwordPlaceholder": "••••••••",
       "confirmPasswordLabel": "Confirm Password",
       "confirmPasswordPlaceholder": "••••••••",
-      "submit": "Create account",
-      "submitting": "Creating account...",
-      "hasAccount": "Already have an account?",
-      "signIn": "Sign in",
-      "successTitle": "Account created!",
-      "successMessage": "Your account is awaiting admin approval. You'll be able to sign in once an administrator confirms your registration.",
-      "backToLogin": "Back to sign in"
+      "complete": "Complete account access",
+      "completing": "Finalizing...",
+      "registering": "Registering as {email}",
+      "completeSuccess": "Welcome aboard!",
+      "completeSuccessDesc": "Your account has been created successfully. Redirecting to login..."
+    },
+    "forgotPassword": {
+      "title": "Forgot password?",
+      "subtitle": "Enter your email to receive a reset link.",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "you@example.com",
+      "submit": "Send reset link",
+      "submitting": "Sending...",
+      "backToLogin": "Back to login",
+      "checkEmail": "Check your email",
+      "checkEmailDesc": "If an account exists, we've sent a password reset link to it.",
+      "checkEmailExpiry": "This link will expire in 15 minutes."
+    },
+    "resetPassword": {
+      "title": "Reset your password",
+      "subtitle": "Enter your new password below.",
+      "passwordLabel": "New password",
+      "passwordPlaceholder": "••••••••",
+      "confirmPasswordLabel": "Confirm new password",
+      "confirmPasswordPlaceholder": "••••••••",
+      "submit": "Reset password",
+      "submitting": "Resetting...",
+      "backToLogin": "Back to login",
+      "invalidLink": "Link invalid or expired",
+      "invalidLinkDesc": "This password reset link is no longer valid. Please request a new one.",
+      "requestNewLink": "Request new link",
+      "successTitle": "Password reset",
+      "successDesc": "Your password has been successfully updated. Redirecting to login..."
     },
     "errors": {
       "notApproved": "Your account is awaiting admin approval",
@@ -46,14 +87,14 @@
   },
   "admin": {
     "title": "User Management",
-    "subtitle": "Approve new registrations and manage existing accounts.",
-    "pending": {
-      "title": "Pending Approval",
-      "empty": "No pending registrations"
-    },
-    "approved": {
-      "title": "Approved Users",
-      "empty": "No approved users yet"
+    "subtitle": "View and manage all user accounts.",
+    "users": {
+      "title": "All Users",
+      "empty": "No users found",
+      "deleteTitle": "Delete user",
+      "deleteConfirm": "Are you sure you want to delete {name}? This action cannot be undone.",
+      "deleteSuccess": "{name} has been deleted.",
+      "deleteError": "Failed to delete user. Please try again."
     },
     "table": {
       "user": "User",
@@ -61,11 +102,7 @@
       "email": "Email",
       "registered": "Registered",
       "role": "Role",
-      "expires": "Expires",
-      "never": "Never",
-      "actions": "Actions",
-      "approve": "Approve",
-      "reject": "Reject"
+      "actions": "Actions"
     },
     "signOut": "Sign out"
   },
@@ -145,6 +182,48 @@
     "loginRequired": "Email or username is required",
     "passwordRequired": "Password is required"
   },
+  "settings": {
+    "title": "Account Settings",
+    "subtitle": "Manage your profile, security, and preferences",
+    "profile": {
+      "title": "Profile",
+      "subtitle": "Update your personal information",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "username": "Username",
+      "save": "Save changes",
+      "saving": "Saving...",
+      "success": "Profile updated successfully",
+      "error": "Failed to update profile"
+    },
+    "security": {
+      "title": "Security",
+      "subtitle": "Update your password and secure your account",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "save": "Update password",
+      "saving": "Updating...",
+      "success": "Password updated successfully",
+      "error": "Failed to update password"
+    },
+    "email": {
+      "title": "Email Address",
+      "subtitle": "Change the email address associated with your account",
+      "current": "Current email",
+      "new": "New email address",
+      "requestChange": "Request email change",
+      "requesting": "Requesting...",
+      "checkEmail": "Check your new email inbox for a verification link to complete the change.",
+      "success": "Verification link sent! Check your new inbox.",
+      "error": "Failed to request email change",
+      "verifyTitle": "Verify Email Change",
+      "verifyDesc": "We're verifying your new email address...",
+      "verifySuccess": "Your email address has been successfully updated.",
+      "verifyError": "Invalid or expired verification link.",
+      "backToSettings": "Back to settings"
+    }
+  },
   "map": {
     "settings": "Map settings",
     "layers": "Layers",
@@ -191,5 +270,40 @@
     "aupSync": "Sync AUP",
     "aupSyncing": "Syncing…",
     "aupLastSync": "Synced"
+  },
+  "changelog": {
+    "title": "Changelog",
+    "subtitle": "New updates and improvements to flyteLog.",
+    "feat": "Feature",
+    "fix": "Fix",
+    "improvement": "Improvement",
+    "security": "Security",
+    "v1_1_0": {
+      "version": "v1.1.0",
+      "date": "March 8, 2026",
+      "title": "Account & Experience Update",
+      "description": "This update focuses on making the app smoother and improving how you manage your account.",
+      "c1": "Improved the account creation and password recovery flows for a seamless experience.",
+      "c2": "Introduced a new, simple email change process directly in Account Settings.",
+      "c3": "Redesigned system emails (like Welcome and Password Reset) with dark mode and multi-language support."
+    },
+    "v1_0_5": {
+      "version": "v1.0.5",
+      "date": "March 5, 2026",
+      "title": "Under-the-hood Improvements",
+      "description": "Internal updates focused on keeping your data secure and the app running smoothly.",
+      "c1": "Upgraded our core security protocols to ensure your account remains safe.",
+      "c2": "Various stability improvements and minor bug fixes across the platform."
+    },
+    "v1_0_0": {
+      "version": "v1.0.0",
+      "date": "February 28, 2026",
+      "title": "Initial Alpha Release",
+      "description": "The first stable testing version of flyteLog arrives.",
+      "c1": "Launched core authentication system (Login, Register).",
+      "c2": "Implemented internationalization (i18n) setup for English and Polish languages.",
+      "c3": "Introduced beautiful dark mode implementation with Tailwind CSS.",
+      "c4": "Established a basic responsive layout tailored for iPad Split View and mobile devices."
+    }
   }
 }
