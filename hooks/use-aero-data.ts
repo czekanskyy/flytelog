@@ -184,7 +184,7 @@ export function useAeroData() {
 
         await Promise.all([
           db.airports.bulkAdd(
-            aeroData.airports.map(({ openaipId, name, icaoCode, type, lat, lon, elevation, geometry }: any) => ({
+            aeroData.airports.map(({ openaipId, name, icaoCode, type, lat, lon, elevation, elevationUnit, geometry, trafficType, ppr, private: isPrivate, skydiveActivity, winchOnly, runways, frequencies }: any) => ({
               openaipId,
               name,
               icaoCode,
@@ -192,7 +192,15 @@ export function useAeroData() {
               lat,
               lon,
               elevation,
+              elevationUnit,
               geometry,
+              trafficType,
+              ppr,
+              private: isPrivate,
+              skydiveActivity,
+              winchOnly,
+              runways,
+              frequencies,
             }))
           ),
           db.airspaces.bulkAdd(
@@ -207,14 +215,21 @@ export function useAeroData() {
             }))
           ),
           db.navaids.bulkAdd(
-            aeroData.navaids.map(({ openaipId, name, type, frequency, lat, lon, elevation }: any) => ({
+            aeroData.navaids.map(({ openaipId, name, identifier, type, frequency, frequencyUnit, channel, range, rangeUnit, lat, lon, elevation, elevationUnit, sourceUpdatedAt }: any) => ({
               openaipId,
               name,
+              identifier,
               type,
               frequency,
+              frequencyUnit,
+              channel,
+              range,
+              rangeUnit,
               lat,
               lon,
               elevation,
+              elevationUnit,
+              sourceUpdatedAt,
             }))
           ),
           db.obstacles.bulkAdd(

@@ -8,7 +8,15 @@ interface AirportRecord {
   lat: number;
   lon: number;
   elevation?: number;
+  elevationUnit?: number;
   geometry?: unknown;
+  trafficType?: number[];
+  ppr?: boolean;
+  private?: boolean;
+  skydiveActivity?: boolean;
+  winchOnly?: boolean;
+  runways?: unknown;
+  frequencies?: unknown;
 }
 
 interface AirspaceRecord {
@@ -24,11 +32,18 @@ interface AirspaceRecord {
 interface NavaidRecord {
   openaipId: string;
   name: string;
+  identifier?: string;
   type: number;
   frequency?: string;
+  frequencyUnit?: number;
+  channel?: string;
+  range?: number;
+  rangeUnit?: number;
   lat: number;
   lon: number;
   elevation?: number;
+  elevationUnit?: number;
+  sourceUpdatedAt?: Date;
 }
 
 interface ObstacleRecord {
