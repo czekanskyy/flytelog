@@ -270,5 +270,40 @@
     "aupSync": "Sync AUP",
     "aupSyncing": "Synchronizuję…",
     "aupLastSync": "Zsynchronizowano"
+  },
+  "changelog": {
+    "title": "Dziennik zmian",
+    "subtitle": "Historia aktualizacji i nowych funkcji flyteLog.",
+    "feat": "Funkcja",
+    "fix": "Poprawka",
+    "improvement": "Ulepszenie",
+    "security": "Bezpieczeństwo",
+    "v1_1_0": {
+      "version": "v1.1.0",
+      "date": "8 Marca 2026",
+      "title": "Aktualizacja konta i wygody użytkowania",
+      "description": "Ta aktualizacja skupia się na płynniejszym działaniu aplikacji i ulepszeniu zarządzania Twoim kontem.",
+      "c1": "Usprawniono procesy tworzenia konta i odzyskiwania hasła dla lepszego doświadczenia.",
+      "c2": "Wprowadzono nowy, przejrzysty proces zmiany adresu e-mail bezpośrednio w Ustawieniach Konta.",
+      "c3": "Odświeżono wygląd wiadomości email (np. Powitanie, Reset Hasła), dodając wsparcie dla motywu ciemnego i wielu języków."
+    },
+    "v1_0_5": {
+      "version": "v1.0.5",
+      "date": "5 Marca 2026",
+      "title": "Ulepszenia systemowe",
+      "description": "Wewnętrzne aktualizacje skupione na bezpieczeństwie Twoich danych i stabilności aplikacji.",
+      "c1": "Zaktualizowano wewnętrzne protokoły bezpieczeństwa, aby zagwarantować najwyższą ochronę konta.",
+      "c2": "Różne poprawki stabilności i drobne usunięte błędy w całej platformie."
+    },
+    "v1_0_0": {
+      "version": "v1.0.0",
+      "date": "28 Lutego 2026",
+      "title": "Pierwsze wydanie Alpha",
+      "description": "Oto pierwsza, stabilna wersja testowa flyteLog.",
+      "c1": "Uruchomiono podstawowy system uwierzytelniania (Rejestracja, Logowanie).",
+      "c2": "Zaimplementowano strukturę wielojęzyczną, gotową na obsługę języka angielskiego i polskiego.",
+      "c3": "Wprowadzono Motyw Ciemny, który automatycznie dopasowuje się do ustawień urządzenia.",
+      "c4": "Ukończono responsywny układ interfejsu The UI the the, dostosowany zarówno do widoku iPad Split View, jak i urządzeń the the mobilnych."
+    }
   }
 }

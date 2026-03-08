@@ -270,5 +270,40 @@
     "aupSync": "Sync AUP",
     "aupSyncing": "Syncing…",
     "aupLastSync": "Synced"
+  },
+  "changelog": {
+    "title": "Changelog",
+    "subtitle": "New updates and improvements to flyteLog.",
+    "feat": "Feature",
+    "fix": "Fix",
+    "improvement": "Improvement",
+    "security": "Security",
+    "v1_1_0": {
+      "version": "v1.1.0",
+      "date": "March 8, 2026",
+      "title": "Account & Experience Update",
+      "description": "This update focuses on making the app smoother and improving how you manage your account.",
+      "c1": "Improved the account creation and password recovery flows for a seamless experience.",
+      "c2": "Introduced a new, simple email change process directly in Account Settings.",
+      "c3": "Redesigned system emails (like Welcome and Password Reset) with dark mode and multi-language support."
+    },
+    "v1_0_5": {
+      "version": "v1.0.5",
+      "date": "March 5, 2026",
+      "title": "Under-the-hood Improvements",
+      "description": "Internal updates focused on keeping your data secure and the app running smoothly.",
+      "c1": "Upgraded our core security protocols to ensure your account remains safe.",
+      "c2": "Various stability improvements and minor bug fixes across the platform."
+    },
+    "v1_0_0": {
+      "version": "v1.0.0",
+      "date": "February 28, 2026",
+      "title": "Initial Alpha Release",
+      "description": "The first stable testing version of flyteLog arrives.",
+      "c1": "Launched core authentication system (Login, Register).",
+      "c2": "Implemented internationalization (i18n) setup for English and Polish languages.",
+      "c3": "Introduced beautiful dark mode implementation with Tailwind CSS.",
+      "c4": "Established a basic responsive layout tailored for iPad Split View and mobile devices."
+    }
   }
 }
