@@ -10,30 +10,71 @@
       "submit": "Zaloguj się",
       "submitting": "Logowanie...",
       "noAccount": "Nie masz konta?",
-      "createOne": "Utwórz je"
+      "createOne": "Utwórz je",
+      "forgotPassword": "Nie pamiętam hasła"
     },
     "register": {
       "title": "Utwórz konto",
       "subtitle": "Dołącz do flyteLog i zarządzaj swoimi lotami",
+      "emailLabel": "Email",
+      "emailPlaceholder": "jan@example.com",
+      "submit": "Wyślij kod rejestracji",
+      "submitting": "Wysyłanie...",
+      "hasAccount": "Masz już konto?",
+      "signIn": "Zaloguj się",
+      "checkEmail": "Sprawdź skrzynkę",
+      "checkEmailDesc": "Wysłaliśmy link rejestracyjny na adres {email}. Kliknij w link, aby dokończyć rejestrację.",
+      "checkEmailExpiry": "Ten link wygaśnie za 24 godziny.",
+      "backToLogin": "Wróć do logowania",
+      "invalidLink": "Link jest nieprawidłowy lub wygasł",
+      "invalidLinkDesc": "Ten link rejestracyjny jest już nieważny. Poproś o nowy.",
+      "requestNewLink": "Poproś o nowy link",
+      
+      "completeTitle": "Dokończ rejestrację",
+      "completeSubtitle": "Jesteś prawie gotowy! Dokończ konfigurację konta.",
       "firstNameLabel": "Imię",
       "firstNamePlaceholder": "Jan",
       "lastNameLabel": "Nazwisko",
       "lastNamePlaceholder": "Nowak",
       "usernameLabel": "Nazwa użytkownika",
       "usernamePlaceholder": "jan.nowak",
-      "emailLabel": "Email",
-      "emailPlaceholder": "jan@example.com",
       "passwordLabel": "Hasło",
       "passwordPlaceholder": "••••••••",
       "confirmPasswordLabel": "Potwierdź hasło",
       "confirmPasswordPlaceholder": "••••••••",
-      "submit": "Utwórz konto",
-      "submitting": "Tworzenie konta...",
-      "hasAccount": "Masz już konto?",
-      "signIn": "Zaloguj się",
-      "successTitle": "Konto utworzone!",
-      "successMessage": "Twoje konto czeka na zatwierdzenie przez administratora. Będziesz mógł się zalogować po potwierdzeniu rejestracji.",
-      "backToLogin": "Wróć do logowania"
+      "complete": "Utwórz konto",
+      "completing": "Tworzenie...",
+      "registering": "Rejestracja jako {email}",
+      "completeSuccess": "Witaj na pokładzie!",
+      "completeSuccessDesc": "Konto zostało pomyślnie utworzone. Przekierowanie do logowania..."
+    },
+    "forgotPassword": {
+      "title": "Nie pamiętam hasła",
+      "subtitle": "Podaj swój adres email, aby otrzymać link do resetu hasła.",
+      "emailLabel": "Adres email",
+      "emailPlaceholder": "ty@example.com",
+      "submit": "Wyślij link do resetu",
+      "submitting": "Wysyłanie...",
+      "backToLogin": "Wróć do logowania",
+      "checkEmail": "Sprawdź skrzynkę",
+      "checkEmailDesc": "Jeśli konto o podanym adresie istnieje, wysłaliśmy na nie link do resetu hasła.",
+      "checkEmailExpiry": "Ten link wygaśnie za 15 minut."
+    },
+    "resetPassword": {
+      "title": "Zresetuj hasło",
+      "subtitle": "Wprowadź swoje nowe hasło poniżej.",
+      "passwordLabel": "Nowe hasło",
+      "passwordPlaceholder": "••••••••",
+      "confirmPasswordLabel": "Potwierdź nowe hasło",
+      "confirmPasswordPlaceholder": "••••••••",
+      "submit": "Zresetuj hasło",
+      "submitting": "Aktualizacja...",
+      "backToLogin": "Wróć do logowania",
+      "invalidLink": "Link jest nieprawidłowy lub wygasł",
+      "invalidLinkDesc": "Ten link resetu hasła jest już nieważny. Poproś o nowy.",
+      "requestNewLink": "Poproś o nowy link",
+      "successTitle": "Hasło zresetowane",
+      "successDesc": "Twoje hasło zostało pomyślnie zaktualizowane. Przekierowanie do logowania..."
     },
     "errors": {
       "notApproved": "Twoje konto oczekuje na zatwierdzenie przez administratora",
@@ -46,14 +87,14 @@
   },
   "admin": {
     "title": "Zarządzanie użytkownikami",
-    "subtitle": "Zatwierdzaj nowe rejestracje i zarządzaj istniejącymi kontami.",
-    "pending": {
-      "title": "Oczekujące na zatwierdzenie",
-      "empty": "Brak oczekujących rejestracji"
-    },
-    "approved": {
-      "title": "Zatwierdzeni użytkownicy",
-      "empty": "Brak zatwierdzonych użytkowników"
+    "subtitle": "Przeglądaj i zarządzaj wszystkimi kontami użytkowników.",
+    "users": {
+      "title": "Wszyscy użytkownicy",
+      "empty": "Brak użytkowników",
+      "deleteTitle": "Usuń użytkownika",
+      "deleteConfirm": "Czy na pewno chcesz usunąć {name}? Tej operacji nie można cofnąć.",
+      "deleteSuccess": "{name} został usunięty.",
+      "deleteError": "Nie udało się usunąć użytkownika. Spróbuj ponownie."
     },
     "table": {
       "user": "Użytkownik",
@@ -61,11 +102,7 @@
       "email": "Email",
       "registered": "Rejestracja",
       "role": "Rola",
-      "expires": "Wygasa",
-      "never": "Nigdy",
-      "actions": "Akcje",
-      "approve": "Zatwierdź",
-      "reject": "Odrzuć"
+      "actions": "Akcje"
     },
     "signOut": "Wyloguj się"
   },
@@ -144,6 +181,48 @@
     "passwordsMismatch": "Hasła nie są zgodne",
     "loginRequired": "Email lub nazwa użytkownika jest wymagana",
     "passwordRequired": "Hasło jest wymagane"
+  },
+  "settings": {
+    "title": "Ustawienia konta",
+    "subtitle": "Zarządzaj swoim profilem, bezpieczeństwem i preferencjami",
+    "profile": {
+      "title": "Profil",
+      "subtitle": "Zaktualizuj swoje dane osobowe",
+      "firstName": "Imię",
+      "lastName": "Nazwisko",
+      "username": "Nazwa użytkownika",
+      "save": "Zapisz zmiany",
+      "saving": "Zapisywanie...",
+      "success": "Profil został pomyślnie zaktualizowany",
+      "error": "Nie udało się zaktualizować profilu"
+    },
+    "security": {
+      "title": "Bezpieczeństwo",
+      "subtitle": "Zaktualizuj swoje hasło i zabezpiecz konto",
+      "currentPassword": "Obecne hasło",
+      "newPassword": "Nowe hasło",
+      "confirmPassword": "Potwierdź nowe hasło",
+      "save": "Zaktualizuj hasło",
+      "saving": "Aktualizacja...",
+      "success": "Hasło zostało pomyślnie zaktualizowane",
+      "error": "Nie udało się zaktualizować hasła"
+    },
+    "email": {
+      "title": "Adres Email",
+      "subtitle": "Zmień adres email powiązany ze swoim kontem",
+      "current": "Obecny email",
+      "new": "Nowy adres email",
+      "requestChange": "Zmień adres email",
+      "requesting": "Wysyłanie...",
+      "checkEmail": "Sprawdź skrzynkę nowego adresu email w poszukiwaniu linku weryfikacyjnego.",
+      "success": "Wysłano link weryfikacyjny! Sprawdź nową skrzynkę.",
+      "error": "Nie udało się zażądać zmiany emaila",
+      "verifyTitle": "Weryfikacja nowego emaila",
+      "verifyDesc": "Weryfikujemy twój nowy adres email...",
+      "verifySuccess": "Twój adres email został pomyślnie zaktualizowany.",
+      "verifyError": "Link weryfikacyjny jest nieprawidłowy lub wygasł.",
+      "backToSettings": "Wróć do ustawień"
+    }
   },
   "map": {
     "settings": "Ustawienia mapy",
@@ -259,6 +338,41 @@
     "wbLanding": "Masa do lądowania",
     "wbAltFuel": "Paliwo na alternate",
     "wbAltMass": "Masa do lądowania (alternate)",
-    "generatePdf": "Generuj PDF"
+    "generatePdf": "Generuj PDF
+  },
+  "changelog": {
+    "title": "Dziennik zmian",
+    "subtitle": "Historia aktualizacji i nowych funkcji flyteLog.",
+    "feat": "Funkcja",
+    "fix": "Poprawka",
+    "improvement": "Ulepszenie",
+    "security": "Bezpieczeństwo",
+    "v1_1_0": {
+      "version": "v1.1.0",
+      "date": "8 Marca 2026",
+      "title": "Aktualizacja konta i wygody użytkowania",
+      "description": "Ta aktualizacja skupia się na płynniejszym działaniu aplikacji i ulepszeniu zarządzania Twoim kontem.",
+      "c1": "Usprawniono procesy tworzenia konta i odzyskiwania hasła dla lepszego doświadczenia.",
+      "c2": "Wprowadzono nowy, przejrzysty proces zmiany adresu e-mail bezpośrednio w Ustawieniach Konta.",
+      "c3": "Odświeżono wygląd wiadomości email (np. Powitanie, Reset Hasła), dodając wsparcie dla motywu ciemnego i wielu języków."
+    },
+    "v1_0_5": {
+      "version": "v1.0.5",
+      "date": "5 Marca 2026",
+      "title": "Ulepszenia systemowe",
+      "description": "Wewnętrzne aktualizacje skupione na bezpieczeństwie Twoich danych i stabilności aplikacji.",
+      "c1": "Zaktualizowano wewnętrzne protokoły bezpieczeństwa, aby zagwarantować najwyższą ochronę konta.",
+      "c2": "Różne poprawki stabilności i drobne usunięte błędy w całej platformie."
+    },
+    "v1_0_0": {
+      "version": "v1.0.0",
+      "date": "28 Lutego 2026",
+      "title": "Pierwsze wydanie Alpha",
+      "description": "Oto pierwsza, stabilna wersja testowa flyteLog.",
+      "c1": "Uruchomiono podstawowy system uwierzytelniania (Rejestracja, Logowanie).",
+      "c2": "Zaimplementowano strukturę wielojęzyczną, gotową na obsługę języka angielskiego i polskiego.",
+      "c3": "Wprowadzono Motyw Ciemny, który automatycznie dopasowuje się do ustawień urządzenia.",
+      "c4": "Ukończono responsywny układ interfejsu The UI the the, dostosowany zarówno do widoku iPad Split View, jak i urządzeń the the mobilnych."
+    }
   }
 }

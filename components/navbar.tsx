@@ -1,13 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ShieldCheck, Settings, HelpCircle, Megaphone, LogOut } from 'lucide-react';
 import { useTranslations, useFormatter } from 'next-intl';
 import { UserAvatar } from '@/components/user-avatar';
 import { ThemeDropdown, LocaleDropdown } from '@/components/nav-dropdowns';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/skeleton';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,20 +27,16 @@ type NavbarProps = {
     email: string;
     avatarColor: string;
     role: string;
-    expiresAt: Date | null;
   };
 };
 
 export function Navbar({ user }: NavbarProps) {
   const t = useTranslations();
   const format = useFormatter();
-  const [greetingIndex, setGreetingIndex] = useState(-1);
 
-  useEffect(() => {
-    setGreetingIndex(Math.floor(Math.random() * GREETING_COUNT));
-  }, []);
+  // Deterministic "random" greeting based on user ID to prevent hydration mismatch
+  const greetingIndex = user.id ? user.id.charCodeAt(user.id.length - 1) % GREETING_COUNT : 0;
 
-  const isMounted = greetingIndex >= 0;
   const isAdmin = user.role === 'ADMIN';
 
   const navLinks = [
@@ -63,11 +57,7 @@ export function Navbar({ user }: NavbarProps) {
 
           {/* Center — greeting */}
           <div className='absolute inset-x-0 hidden md:flex justify-center pointer-events-none px-48'>
-            {isMounted ? (
-              <p className='text-sm text-slate-500 dark:text-zinc-400 truncate'>{t(`greetings.${greetingIndex}`, { name: user.firstName })}</p>
-            ) : (
-              <Skeleton className='h-4 w-40' />
-            )}
+            <p className='text-sm text-slate-500 dark:text-zinc-400 truncate'>{t(`greetings.${greetingIndex}`, { name: user.firstName })}</p>
           </div>
 
           {/* Right — actions */}
@@ -111,22 +101,6 @@ export function Navbar({ user }: NavbarProps) {
                     <p className='text-xs leading-none text-slate-500 dark:text-zinc-400 italic'>{user.username}</p>
                     <p className='text-xs leading-none text-slate-500 dark:text-zinc-400'>{user.email}</p>
                   </div>
-                  {user.expiresAt && (
-                    <div className='mt-2 text-xs text-slate-500 dark:text-zinc-400'>
-                      {t('nav.validUntil')}:<br />
-                      <span className='font-medium text-slate-700 dark:text-zinc-300'>
-                        {format.dateTime(new Date(user.expiresAt), {
-                          weekday: 'short',
-                          day: '2-digit',
-                          month: '2-digit',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          hour12: false,
-                        })}
-                      </span>
-                    </div>
-                  )}
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild className='cursor-pointer gap-2'>
