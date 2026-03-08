@@ -1,7 +1,12 @@
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { config } from 'dotenv';
 import axios from 'axios';
 
-const prisma = new PrismaClient();
+config({ path: '.env' });
+
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+const prisma = new PrismaClient({ adapter });
 
 // MUST SET MANUALLY FOR SCRIPT
 const API_KEY = 'dfe9f5266c3df032f5c998e0ed1965dc';
@@ -52,7 +57,15 @@ async function sync() {
         lat: a.geometry.coordinates[1],
         lon: a.geometry.coordinates[0],
         elevation: a.elevation?.value,
+        elevationUnit: a.elevation?.unit,
         country: a.country,
+        trafficType: a.trafficType || [],
+        ppr: a.ppr || false,
+        private: a.private || false,
+        skydiveActivity: a.skydiveActivity || false,
+        winchOnly: a.winchOnly || false,
+        runways: a.runways || [],
+        frequencies: a.frequencies || [],
       }));
       await tx.airport.createMany({ data: records });
     });
@@ -67,12 +80,19 @@ async function sync() {
       const records = navaids.map(n => ({
         openaipId: n._id,
         name: n.name,
+        identifier: n.identifier,
         type: n.type,
         frequency: n.frequency?.value ? n.frequency.value.toString() : null,
+        frequencyUnit: n.frequency?.unit,
+        channel: n.channel,
+        range: n.range?.value,
+        rangeUnit: n.range?.unit,
         lat: n.geometry.coordinates[1],
         lon: n.geometry.coordinates[0],
         elevation: n.elevation?.value,
+        elevationUnit: n.elevation?.unit,
         country: n.country,
+        sourceUpdatedAt: n.updatedAt ? new Date(n.updatedAt) : null,
       }));
       await tx.navaid.createMany({ data: records });
     });

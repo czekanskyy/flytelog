@@ -65,17 +65,25 @@ model VerificationToken {
 }
 
 model Airport {
-  id        String   @id @default(cuid())
-  openaipId String   @unique
-  name      String
-  icaoCode  String?
-  type      Int
-  lat       Float
-  lon       Float
-  elevation Float?
-  country   String   @default("PL")
-  geometry  Json?
-  updatedAt DateTime @updatedAt
+  id              String   @id @default(cuid())
+  openaipId       String   @unique
+  name            String
+  icaoCode        String?
+  type            Int
+  lat             Float
+  lon             Float
+  elevation       Float?
+  elevationUnit   Int?
+  country         String   @default("PL")
+  geometry        Json?
+  trafficType     Int[]
+  ppr             Boolean  @default(false)
+  private         Boolean  @default(false)
+  skydiveActivity Boolean  @default(false)
+  winchOnly       Boolean  @default(false)
+  runways         Json?
+  frequencies     Json?
+  updatedAt       DateTime @updatedAt
 
   @@index([country])
   @@index([lat, lon])
@@ -98,16 +106,23 @@ model Airspace {
 }
 
 model Navaid {
-  id        String   @id @default(cuid())
-  openaipId String   @unique
-  name      String
-  type      Int
-  frequency String?
-  lat       Float
-  lon       Float
-  elevation Float?
-  country   String   @default("PL")
-  updatedAt DateTime @updatedAt
+  id              String    @id @default(cuid())
+  openaipId       String    @unique
+  name            String
+  identifier      String?
+  type            Int
+  frequency       String?
+  frequencyUnit   Int?
+  channel         String?
+  range           Float?
+  rangeUnit       Int?
+  lat             Float
+  lon             Float
+  elevation       Float?
+  elevationUnit   Int?
+  country         String    @default("PL")
+  sourceUpdatedAt DateTime?
+  updatedAt       DateTime  @updatedAt
 
   @@index([country])
   @@index([lat, lon])

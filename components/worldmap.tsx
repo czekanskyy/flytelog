@@ -161,15 +161,20 @@ const NAVAID_TYPE_LABELS: Record<number, string> = {
 };
 
 const AIRPORT_TYPE_LABELS: Record<number, string> = {
-  0: 'Civil/Military Airport',
+  0: 'Civil & Military Airport',
+  1: 'Glider Site',
   2: 'Civil Airport',
   3: 'Intl. Airport',
+  4: 'Military Heliport',
   5: 'Military Airport',
-  6: 'ULFS',
-  7: 'Heliport',
-  8: 'Closed A/D',
+  6: 'Ultralight Airfield',
+  7: 'Civil Heliport',
+  8: 'Closed Airfield',
   9: 'Intl. Airport',
+  10: 'Water Airfield',
   11: 'Landing Strip',
+  12: 'Agricultural Airfield',
+  13: 'Mountain Airfield',
 };
 
 const POPUP_W = 240;
@@ -210,10 +215,10 @@ function PointPopup({
 
   const typeLabel =
     kind === 'navaid' && data.type != null
-      ? NAVAID_TYPE_LABELS[data.type] ?? `Type ${data.type}`
+      ? (NAVAID_TYPE_LABELS[data.type] ?? `Type ${data.type}`)
       : kind === 'airport' && data.type != null
-      ? AIRPORT_TYPE_LABELS[data.type] ?? `Type ${data.type}`
-      : kindLabel[kind];
+        ? (AIRPORT_TYPE_LABELS[data.type] ?? `Type ${data.type}`)
+        : kindLabel[kind];
 
   const isAirport = kind === 'airport';
 
@@ -429,7 +434,7 @@ export default function WorldMap({ airspaces = [], layers, airports, navaids, ob
       setDeparture({ name: p.data.name ?? p.data.icaoCode ?? 'ADEP', lat: p.lat, lon: p.lon, elev: p.data.elevation, type: kindToWpType(p.kind) });
       setSelectedPoint(null);
     },
-    [setDeparture, kindToWpType]
+    [setDeparture, kindToWpType],
   );
 
   const handleAdes = useCallback(
@@ -437,7 +442,7 @@ export default function WorldMap({ airspaces = [], layers, airports, navaids, ob
       setDestination({ name: p.data.name ?? p.data.icaoCode ?? 'ADES', lat: p.lat, lon: p.lon, elev: p.data.elevation, type: kindToWpType(p.kind) });
       setSelectedPoint(null);
     },
-    [setDestination, kindToWpType]
+    [setDestination, kindToWpType],
   );
 
   const handleWpt = useCallback(
@@ -445,7 +450,7 @@ export default function WorldMap({ airspaces = [], layers, airports, navaids, ob
       addEnroute({ name: p.data.name ?? p.data.icaoCode ?? 'WPT', lat: p.lat, lon: p.lon, elev: p.data.elevation, type: kindToWpType(p.kind) });
       setSelectedPoint(null);
     },
-    [addEnroute, kindToWpType]
+    [addEnroute, kindToWpType],
   );
 
   // Compute navlog for leg coloring
@@ -474,7 +479,7 @@ export default function WorldMap({ airspaces = [], layers, airports, navaids, ob
         mapRef.current?.flyTo(c, 13, { duration: 1.5 });
       },
       () => setShowLocationError(true),
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 },
     );
   }, []);
 
@@ -482,7 +487,7 @@ export default function WorldMap({ airspaces = [], layers, airports, navaids, ob
     (lat: number, lon: number) => {
       onMapClick?.(lat, lon);
     },
-    [onMapClick]
+    [onMapClick],
   );
 
   const mapLayerUrl =
@@ -516,16 +521,16 @@ export default function WorldMap({ airspaces = [], layers, airports, navaids, ob
               ? as.lowerLimit === 0
                 ? 'GND'
                 : as.lowerLimit <= 6500
-                ? `A${Math.round(as.lowerLimit / 100)}`
-                : `FL${String(Math.round(as.lowerLimit / 100)).padStart(3, '0')}`
+                  ? `A${Math.round(as.lowerLimit / 100)}`
+                  : `FL${String(Math.round(as.lowerLimit / 100)).padStart(3, '0')}`
               : '—';
           const upperStr =
             as.upperLimit != null
               ? as.upperLimit >= 66000
                 ? 'UNL'
                 : as.upperLimit <= 6500
-                ? `A${Math.round(as.upperLimit / 100)}`
-                : `FL${String(Math.round(as.upperLimit / 100)).padStart(3, '0')}`
+                  ? `A${Math.round(as.upperLimit / 100)}`
+                  : `FL${String(Math.round(as.upperLimit / 100)).padStart(3, '0')}`
               : '—';
 
           const typeLabels: Record<number, string> = {
@@ -564,7 +569,7 @@ export default function WorldMap({ airspaces = [], layers, airports, navaids, ob
                       <tr><td style="color:#6b7280;padding:1px 4px 1px 0">↑ Upper</td><td style="font-weight:600">${upperStr}</td></tr>
                     </table>
                   </div>`,
-                  { className: 'leaflet-popup-airspace' }
+                  { className: 'leaflet-popup-airspace' },
                 );
               }}
             />
@@ -661,7 +666,7 @@ export default function WorldMap({ airspaces = [], layers, airports, navaids, ob
             icon={L.divIcon({
               className: '',
               html: `<div style="filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));">${renderToStaticMarkup(
-                <Crosshair width={24} height={24} stroke='#0ea5e9' strokeWidth={2} fill='none' />
+                <Crosshair width={24} height={24} stroke='#0ea5e9' strokeWidth={2} fill='none' />,
               )}</div>`,
               iconSize: [24, 24],
               iconAnchor: [12, 12],
