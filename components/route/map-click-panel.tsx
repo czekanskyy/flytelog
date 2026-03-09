@@ -51,7 +51,7 @@ export function MapClickPanel({ clickedPoint, onClose }: MapClickPanelProps) {
 
   useEffect(() => {
     if (!clickedPoint) {
-      setResults([]);
+      setTimeout(() => setResults([]), 0);
       return;
     }
 
@@ -66,7 +66,7 @@ export function MapClickPanel({ clickedPoint, onClose }: MapClickPanelProps) {
   const handleAddPoint = useCallback(
     (
       point: { name: string; lat: number; lon: number; elev?: number | null; type: NearbySearchResult['type'] | 'custom' },
-      role: 'departure' | 'waypoint' | 'destination'
+      role: 'departure' | 'waypoint' | 'destination',
     ) => {
       const wp = { name: point.name, lat: point.lat, lon: point.lon, elev: point.elev, type: point.type };
 
@@ -76,7 +76,7 @@ export function MapClickPanel({ clickedPoint, onClose }: MapClickPanelProps) {
 
       onClose();
     },
-    [setDeparture, setDestination, addEnroute, onClose]
+    [setDeparture, setDestination, addEnroute, onClose],
   );
 
   if (!clickedPoint) return null;
@@ -91,7 +91,7 @@ export function MapClickPanel({ clickedPoint, onClose }: MapClickPanelProps) {
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: '100%', opacity: 0 }}
         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-        className='absolute top-18 right-2 bottom-2 z-40 w-80 flex flex-col rounded-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl shadow-xl overflow-hidden select-none'
+        className='absolute top-28 right-0 bottom-0 z-40 w-80 flex flex-col rounded-none bg-card shadow-md overflow-hidden select-none border-l border-border'
       >
         {/* Header */}
         <div className='flex items-center justify-between px-4 py-3 shrink-0'>
@@ -168,12 +168,12 @@ export function MapClickPanel({ clickedPoint, onClose }: MapClickPanelProps) {
                             result.type === 'airport'
                               ? 'bg-sky-100 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400'
                               : result.type === 'navaid'
-                              ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400'
-                              : result.type === 'reporting-point'
-                              ? 'bg-violet-100 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400'
-                              : result.type === 'peak'
-                              ? 'bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400'
-                              : 'bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400'
+                                ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400'
+                                : result.type === 'reporting-point'
+                                  ? 'bg-violet-100 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400'
+                                  : result.type === 'peak'
+                                    ? 'bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400'
+                                    : 'bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400'
                           }`}
                         >
                           {TYPE_LABELS[result.type] ?? result.type}

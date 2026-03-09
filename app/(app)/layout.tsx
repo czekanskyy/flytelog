@@ -1,6 +1,7 @@
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { Navbar } from '@/components/navbar';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -10,9 +11,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className='min-h-svh bg-slate-50 dark:bg-zinc-950'>
-      <Navbar user={session.user} />
-      {children}
-    </div>
+    <TooltipProvider delayDuration={300}>
+      <div className='min-h-svh bg-background flex flex-col'>
+        <Navbar user={session.user} />
+        <main className='flex-1 relative border-t border-border'>{children}</main>
+      </div>
+    </TooltipProvider>
   );
 }

@@ -29,7 +29,7 @@
       "invalidLink": "Link jest nieprawidłowy lub wygasł",
       "invalidLinkDesc": "Ten link rejestracyjny jest już nieważny. Poproś o nowy.",
       "requestNewLink": "Poproś o nowy link",
-      
+
       "completeTitle": "Dokończ rejestrację",
       "completeSubtitle": "Jesteś prawie gotowy! Dokończ konfigurację konta.",
       "firstNameLabel": "Imię",
@@ -338,7 +338,7 @@
     "wbLanding": "Masa do lądowania",
     "wbAltFuel": "Paliwo na alternate",
     "wbAltMass": "Masa do lądowania (alternate)",
-    "generatePdf": "Generuj PDF
+    "generatePdf": "Generuj PDF"
   },
   "changelog": {
     "title": "Dziennik zmian",

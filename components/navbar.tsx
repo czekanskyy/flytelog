@@ -14,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { signOut } from 'next-auth/react';
 
 const GREETING_COUNT = 9;
@@ -47,8 +48,8 @@ export function Navbar({ user }: NavbarProps) {
   ];
 
   return (
-    <header className='sticky top-0 z-50 px-2 pt-2'>
-      <div className='mx-auto max-w-7xl rounded-xl bg-white/75 dark:bg-zinc-900/75 backdrop-blur-lg shadow-lg shadow-slate-200/50 dark:shadow-zinc-950/50'>
+    <header className='sticky top-0 z-50 w-full'>
+      <div className='w-full max-w-none rounded-none border-b border-border bg-card'>
         <div className='relative flex h-14 items-center justify-between px-4 lg:px-5'>
           {/* Left — logo */}
           <Link href='/' className='text-lg font-bold tracking-tight text-sky-600 dark:text-sky-400 select-none shrink-0'>
@@ -69,18 +70,23 @@ export function Navbar({ user }: NavbarProps) {
             <div className='w-px h-5 rounded-full border border-slate-500 dark:border-zinc-400 mx-2' />
 
             {navLinks.map(({ icon: Icon, label, href }) => (
-              <Button
-                key={href}
-                variant='ghost'
-                size='sm'
-                asChild
-                className='h-9 w-9 px-0 text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200 hidden sm:inline-flex'
-                title={label}
-              >
-                <Link href={href}>
-                  <Icon className='h-4.5 w-4.5' />
-                </Link>
-              </Button>
+              <Tooltip key={href}>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant='ghost'
+                    size='sm'
+                    asChild
+                    className='h-9 w-9 px-0 text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200 hidden sm:inline-flex'
+                  >
+                    <Link href={href}>
+                      <Icon className='h-4.5 w-4.5' />
+                    </Link>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{label}</p>
+                </TooltipContent>
+              </Tooltip>
             ))}
 
             <DropdownMenu>
@@ -89,10 +95,7 @@ export function Navbar({ user }: NavbarProps) {
                   <UserAvatar firstName={user.firstName} lastName={user.lastName} color={user.avatarColor} size='sm' />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align='end'
-                className='w-64 p-2 bg-white/75 dark:bg-zinc-900/75 backdrop-blur-lg shadow-lg shadow-slate-200/50 dark:shadow-zinc-950/50 mt-4'
-              >
+              <DropdownMenuContent align='end' className='w-64 mt-2'>
                 <DropdownMenuLabel className='font-normal flex flex-col gap-1 p-2'>
                   <div className='flex flex-col space-y-1'>
                     <p className='text-sm font-medium leading-none text-slate-900 dark:text-zinc-100'>
