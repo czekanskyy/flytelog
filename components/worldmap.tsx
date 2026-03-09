@@ -131,10 +131,19 @@ interface ObjectRecord {
   lat: number;
   lon: number;
   icaoCode?: string;
+  identifier?: string;
   elevation?: number;
   heightAgl?: number;
   type?: number;
   frequency?: string;
+  frequencies?: any[];
+  runways?: any[];
+  private?: boolean;
+  skydiveActivity?: boolean;
+  winchOnly?: boolean;
+  ppr?: boolean;
+  channel?: string;
+  range?: number;
   objectKind?: 'airport' | 'navaid' | 'obstacle' | 'reporting-point';
 }
 
@@ -178,7 +187,7 @@ const AIRPORT_TYPE_LABELS: Record<number, string> = {
 };
 
 const POPUP_W = 240;
-const POPUP_H_EST = 220;
+const POPUP_H_EST = 280;
 
 function PointPopup({
   point,
@@ -234,7 +243,9 @@ function PointPopup({
         <div className='flex items-start justify-between gap-2 px-3 pt-3 pb-2'>
           <div className='flex-1 min-w-0'>
             <p className='text-sm font-bold text-slate-900 dark:text-zinc-100 leading-tight truncate'>{data.name ?? '—'}</p>
-            {data.icaoCode && <p className='text-[11px] font-mono text-slate-400 dark:text-zinc-500 mt-0.5'>{data.icaoCode}</p>}
+            {(data.icaoCode || data.identifier) && (
+              <p className='text-[11px] font-mono text-slate-400 dark:text-zinc-500 mt-0.5'>{data.icaoCode || data.identifier}</p>
+            )}
           </div>
           <button
             onClick={onClose}
@@ -245,18 +256,38 @@ function PointPopup({
         </div>
 
         {/* Type badge */}
-        <div className='px-3 pb-2'>
+        <div className='px-3 pb-2 flex flex-wrap gap-1'>
           <span
-            className='inline-flex items-center gap-1 text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full text-white'
+            className='inline-flex items-center gap-1 text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full text-white shrink-0'
             style={{ background: kindColors[kind] }}
           >
             <Info className='h-2.5 w-2.5' />
             {typeLabel}
           </span>
+          {isAirport && data.private && (
+            <span className='inline-flex items-center gap-1 text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-slate-500 text-white shrink-0'>
+              Private
+            </span>
+          )}
+          {isAirport && data.ppr && (
+            <span className='inline-flex items-center gap-1 text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-amber-500 text-white shrink-0'>
+              PPR
+            </span>
+          )}
+          {isAirport && data.skydiveActivity && (
+            <span className='inline-flex items-center gap-1 text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-indigo-500 text-white shrink-0'>
+              Skydive
+            </span>
+          )}
+          {isAirport && data.winchOnly && (
+            <span className='inline-flex items-center gap-1 text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-teal-500 text-white shrink-0'>
+              Winch
+            </span>
+          )}
         </div>
 
         {/* Data rows */}
-        <div className='px-3 pb-2 flex flex-col gap-0.5'>
+        <div className='px-3 pb-2 flex flex-col gap-0.5 max-h-48 overflow-y-auto no-scrollbar'>
           {data.elevation != null && (
             <div className='flex justify-between text-xs'>
               <span className='text-slate-500 dark:text-zinc-400'>AMSL</span>
@@ -273,6 +304,45 @@ function PointPopup({
             <div className='flex justify-between text-xs'>
               <span className='text-slate-500 dark:text-zinc-400'>FREQ</span>
               <span className='font-medium font-mono text-slate-800 dark:text-zinc-200'>{data.frequency}</span>
+            </div>
+          )}
+          {kind === 'navaid' && data.channel && (
+            <div className='flex justify-between text-xs'>
+              <span className='text-slate-500 dark:text-zinc-400'>CH</span>
+              <span className='font-medium font-mono text-slate-800 dark:text-zinc-200'>{data.channel}</span>
+            </div>
+          )}
+          {kind === 'navaid' && data.range != null && (
+            <div className='flex justify-between text-xs'>
+              <span className='text-slate-500 dark:text-zinc-400'>RNG</span>
+              <span className='font-medium text-slate-800 dark:text-zinc-200'>{data.range} NM</span>
+            </div>
+          )}
+          {isAirport && Array.isArray(data.frequencies) && data.frequencies.length > 0 && (
+            <div className='mt-1 flex flex-col gap-0.5 border-t border-slate-100 dark:border-zinc-800 pt-1'>
+              {data.frequencies.slice(0, 4).map((f, i) => (
+                <div key={`f-${i}`} className='flex justify-between text-xs items-center gap-2'>
+                  <span className='text-slate-500 dark:text-zinc-400 truncate uppercase text-[10px]'>{f.name || 'FREQ'}</span>
+                  <span className='font-medium font-mono text-slate-800 dark:text-zinc-200 shrink-0'>{f.value}</span>
+                </div>
+              ))}
+            </div>
+          )}
+          {isAirport && Array.isArray(data.runways) && data.runways.length > 0 && (
+            <div className='mt-1 flex flex-col gap-0.5 border-t border-slate-100 dark:border-zinc-800 pt-2 pb-1'>
+              {data.runways.map((r, i) => {
+                const length = r.dimension?.length?.value;
+                return (
+                  <div key={`r-${i}`} className='flex justify-between items-center text-xs'>
+                    <span className='font-semibold text-slate-700 dark:text-zinc-300'>RWY {r.designator}</span>
+                    {length && (
+                      <span className='font-medium text-slate-500 dark:text-zinc-400 text-[10px] bg-slate-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded'>
+                        {Math.round(length)}m
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

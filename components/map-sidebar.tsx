@@ -31,6 +31,7 @@ import { useAeroData, type WaypointSearchResult } from '@/hooks/use-aero-data';
 import { TerrainProfileChart } from '@/components/route/terrain-profile';
 import { getTerrainProfile, type TerrainSample } from '@/lib/terrain';
 import { computeNavlog, type NavlogEntry } from '@/lib/navlog';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 export interface LayerState {
   airspaceTypes: Record<number, boolean>;
@@ -236,7 +237,7 @@ export function MapSidebar({ onLayerChange }: MapSidebarProps) {
       setSearchResults([]);
       setShowEnrouteSearch(false);
     },
-    [setDeparture, setDestination, addEnroute]
+    [setDeparture, setDestination, addEnroute],
   );
 
   const handleDragStart = (index: number) => setDragIndex(index);
@@ -255,10 +256,11 @@ export function MapSidebar({ onLayerChange }: MapSidebarProps) {
       initial={{ width: 56 }}
       animate={{ width: isExpanded ? 380 : 56 }}
       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-      className='absolute top-18 left-2 z-40 bottom-2 flex flex-col rounded-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl shadow-xl overflow-hidden select-none'
+      className='absolute top-0 left-0 z-40 h-full flex flex-col rounded-none shadow-md overflow-hidden select-none border-r border-border bg-card'
     >
       {/* Icon strip — always visible */}
       <div className='flex flex-col shrink-0 py-2 gap-1'>
+        <div className='h-28 shrink-0' /> {/* Spacer for navbar & tabs */}
         <SidebarIconButton
           icon={PlaneTakeoff}
           active={isExpanded && openSections.has('route')}
@@ -283,7 +285,6 @@ export function MapSidebar({ onLayerChange }: MapSidebarProps) {
             } else toggleSection('layers');
           }}
         />
-
         {isExpanded && (
           <button
             onClick={() => setIsExpanded(false)}
@@ -359,10 +360,9 @@ function SidebarIconButton({
   isExpanded: boolean;
   onClick: () => void;
 }) {
-  return (
+  const content = (
     <button
       onClick={onClick}
-      title={!isExpanded ? label : undefined}
       className={`flex items-center gap-2 mx-2 px-2 h-10 rounded-xl text-sm font-medium transition-colors ${
         active
           ? 'bg-sky-100 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400'
@@ -372,6 +372,17 @@ function SidebarIconButton({
       <Icon className='h-4 w-4 shrink-0' />
       {isExpanded && <span className='text-xs truncate'>{label}</span>}
     </button>
+  );
+
+  if (isExpanded) return content;
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{content}</TooltipTrigger>
+      <TooltipContent side='right'>
+        <p>{label}</p>
+      </TooltipContent>
+    </Tooltip>
   );
 }
 
@@ -498,7 +509,7 @@ function RouteTab({
 
   useEffect(() => {
     if (depSearch.length < 2) {
-      setDepResults([]);
+      setTimeout(() => setDepResults([]), 0);
       return;
     }
     const t = setTimeout(() => searchWaypoints(depSearch).then(setDepResults), 200);
@@ -507,7 +518,7 @@ function RouteTab({
 
   useEffect(() => {
     if (destSearch.length < 2) {
-      setDestResults([]);
+      setTimeout(() => setDestResults([]), 0);
       return;
     }
     const t = setTimeout(() => searchWaypoints(destSearch).then(setDestResults), 200);
