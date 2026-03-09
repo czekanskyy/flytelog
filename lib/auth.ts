@@ -46,7 +46,7 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
       if (user) {
         const dbUser = await prisma.user.findUnique({
           where: { id: user.id! },
-          select: { role: true, firstName: true, lastName: true, username: true, avatarColor: true, email: true, uiBgOpacity: true },
+          select: { role: true, firstName: true, lastName: true, username: true, avatarColor: true, email: true },
         });
         if (dbUser) {
           token.role = dbUser.role;
@@ -55,7 +55,6 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
           token.username = dbUser.username;
           token.email = dbUser.email;
           token.avatarColor = dbUser.avatarColor;
-          token.uiBgOpacity = dbUser.uiBgOpacity;
         }
       }
       if (trigger === 'update' && session !== null) {
@@ -65,7 +64,6 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
         if (session.email) token.email = session.email;
         if (session.avatarColor) token.avatarColor = session.avatarColor;
         if (session.role) token.role = session.role;
-        if (session.uiBgOpacity !== undefined) token.uiBgOpacity = session.uiBgOpacity;
       }
       return token;
     },
@@ -78,7 +76,6 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
         session.user.username = token.username as string;
         session.user.email = token.email as string;
         session.user.avatarColor = token.avatarColor as string;
-        session.user.uiBgOpacity = token.uiBgOpacity as number;
       }
       return session;
     },
