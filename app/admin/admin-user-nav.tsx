@@ -21,7 +21,7 @@ type AdminUserNavProps = {
     lastName: string;
     username: string;
     email: string;
-    avatarColor: string;
+    avatarSeed: string;
     role: string;
   };
 };
@@ -34,8 +34,10 @@ export function AdminUserNav({ user }: AdminUserNavProps) {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant='ghost' size='sm' className='h-9 w-auto px-2 gap-2 rounded-full hover:bg-zinc-800 hover:text-zinc-100' title={t('nav.account')}>
-            <span className="hidden sm:inline-block">{user.firstName} {user.lastName}</span>
-            <UserAvatar firstName={user.firstName} lastName={user.lastName} color={user.avatarColor} size='sm' />
+            <span className='hidden sm:inline-block'>
+              {user.firstName} {user.lastName}
+            </span>
+            <UserAvatar firstName={user.firstName} lastName={user.lastName} seed={user.avatarSeed} size='sm' />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
@@ -49,8 +51,8 @@ export function AdminUserNav({ user }: AdminUserNavProps) {
               </p>
               <p className='text-xs leading-none text-slate-500 dark:text-zinc-400 italic'>@{user.username}</p>
               <p className='text-xs leading-none text-slate-500 dark:text-zinc-400'>{user.email}</p>
-              <div className="mt-1">
-                <span className="inline-block rounded bg-indigo-500/10 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-indigo-500">
+              <div className='mt-1'>
+                <span className='inline-block rounded bg-indigo-500/10 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-indigo-500'>
                   {user.role}
                 </span>
               </div>

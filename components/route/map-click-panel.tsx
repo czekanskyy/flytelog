@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plane, Navigation, MapPin, Mountain, Crosshair, PlaneTakeoff, PlaneLanding, Flag, Radio, Triangle } from 'lucide-react';
+import { X, Plane, MapPin, Mountain, Crosshair, PlaneTakeoff, PlaneLanding, Radio, Triangle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useRoute, toFplCoords } from '@/components/route/route-context';
 import { useAeroData, type NearbySearchResult } from '@/hooks/use-aero-data';
@@ -11,6 +11,8 @@ interface MapClickPanelProps {
   clickedPoint: { lat: number; lon: number } | null;
   onClose: () => void;
 }
+
+const searchRadius = 5;
 
 const TYPE_ICONS: Record<string, React.ElementType> = {
   airport: Plane,
@@ -57,7 +59,7 @@ export function MapClickPanel({ clickedPoint, onClose }: MapClickPanelProps) {
 
     setIsLoading(true);
     setCustomName('');
-    searchNearby(clickedPoint.lat, clickedPoint.lon, 10).then(r => {
+    searchNearby(clickedPoint.lat, clickedPoint.lon, searchRadius).then(r => {
       setResults(r);
       setIsLoading(false);
     });
@@ -91,7 +93,7 @@ export function MapClickPanel({ clickedPoint, onClose }: MapClickPanelProps) {
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: '100%', opacity: 0 }}
         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-        className='absolute top-28 right-0 bottom-0 z-40 w-80 flex flex-col rounded-none bg-card shadow-md overflow-hidden select-none border-l border-border'
+        className='absolute lg:top-36 right-4 bottom-4 z-40 w-96 hidden lg:flex flex-col rounded-2xl bg-white dark:bg-zinc-900 shadow-md overflow-hidden select-none'
       >
         {/* Header */}
         <div className='flex items-center justify-between px-4 py-3 shrink-0'>
@@ -138,7 +140,9 @@ export function MapClickPanel({ clickedPoint, onClose }: MapClickPanelProps) {
           </div>
 
           {/* Nearby results */}
-          <h4 className='text-xs font-medium text-slate-500 dark:text-zinc-400 uppercase tracking-wider'>{t('nearbyPoints')} (10 NM)</h4>
+          <h4 className='text-xs font-medium text-slate-500 dark:text-zinc-400 uppercase tracking-wider'>
+            {t('nearbyPoints')} ({searchRadius} NM)
+          </h4>
 
           {isLoading && (
             <div className='flex justify-center py-4'>

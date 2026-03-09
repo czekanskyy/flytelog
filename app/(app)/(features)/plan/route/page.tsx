@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
-import { MapSidebar, type LayerState } from '@/components/map-sidebar';
+import { Sidebar, type LayerState } from '@/components/route/sidebar';
 import { MapClickPanel } from '@/components/route/map-click-panel';
 import { RouteProvider } from '@/components/route/route-context';
 import { useAeroData } from '@/hooks/use-aero-data';
@@ -49,11 +49,11 @@ function RoutePageInner() {
 
   return (
     <div className='fixed inset-0 z-0'>
-      <MapSidebar onLayerChange={handleLayerChange} />
+      <Sidebar onLayerChange={handleLayerChange} />
       <DynamicWorldMap
         airspaces={visibleAirspaces}
         layers={layers}
-        airports={layers?.showAirports ? data?.airports : undefined}
+        airports={layers?.showAirports ? (data?.airports as any) : undefined}
         navaids={layers?.showNavaids ? data?.navaids : undefined}
         obstacles={layers?.showObstacles ? data?.obstacles : undefined}
         reportingPoints={layers?.showReportingPoints ? data?.reportingPoints : undefined}

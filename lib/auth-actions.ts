@@ -6,8 +6,8 @@ import { prisma } from '@/lib/prisma';
 import { signIn } from '@/lib/auth';
 import { AuthError } from 'next-auth';
 import { z } from 'zod';
-import { getRandomAvatarColor } from '@/lib/avatar';
 import { sendWelcomeEmail, sendRegistrationEmail, sendPasswordResetEmail } from '@/lib/emails';
+import { generate } from 'random-words';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -25,11 +25,11 @@ const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
 
 async function verifyTurnstileToken(token: string | null): Promise<boolean> {
   if (!token) return false;
-  
+
   const secretKey = process.env.TURNSTILE_SECRET_KEY;
   if (!secretKey) {
-    console.warn("[Turnstile] Missing TURNSTILE_SECRET_KEY. Bypassing validation (NOT SECURE FOR PRODUCTION).");
-    return true; 
+    console.warn('[Turnstile] Missing TURNSTILE_SECRET_KEY. Bypassing validation (NOT SECURE FOR PRODUCTION).');
+    return true;
   }
 
   const fd = new URLSearchParams();
@@ -44,7 +44,7 @@ async function verifyTurnstileToken(token: string | null): Promise<boolean> {
     const data = await res.json();
     return !!data.success;
   } catch (err) {
-    console.error("[Turnstile] verification crashed:", err);
+    console.error('[Turnstile] verification crashed:', err);
     return false;
   }
 }
@@ -55,33 +55,37 @@ const emailSchema = z.object({
   email: z.string().email('Invalid email address'),
 });
 
-const completeRegistrationSchema = z.object({
-  firstName: z.string().min(2, 'First name must be at least 2 characters').max(50),
-  lastName: z.string().min(2, 'Last name must be at least 2 characters').max(50),
-  username: z
-    .string()
-    .min(3, 'Username must be at least 3 characters')
-    .max(30)
-    .regex(/^[a-zA-Z0-9_.-]+$/, 'Username can only contain letters, numbers, dots, dashes, and underscores'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-  confirmPassword: z.string(),
-}).refine((d) => d.password === d.confirmPassword, {
-  message: 'Passwords do not match',
-  path: ['confirmPassword'],
-});
+const completeRegistrationSchema = z
+  .object({
+    firstName: z.string().min(2, 'First name must be at least 2 characters').max(50),
+    lastName: z.string().min(2, 'Last name must be at least 2 characters').max(50),
+    username: z
+      .string()
+      .min(3, 'Username must be at least 3 characters')
+      .max(30)
+      .regex(/^[a-zA-Z0-9_.-]+$/, 'Username can only contain letters, numbers, dots, dashes, and underscores'),
+    password: z.string().min(8, 'Password must be at least 8 characters'),
+    confirmPassword: z.string(),
+  })
+  .refine(d => d.password === d.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
 
 const loginSchema = z.object({
   login: z.string().min(1, 'Email or username is required'),
   password: z.string().min(1, 'Password is required'),
 });
 
-const resetPasswordSchema = z.object({
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-  confirmPassword: z.string(),
-}).refine((d) => d.password === d.confirmPassword, {
-  message: 'Passwords do not match',
-  path: ['confirmPassword'],
-});
+const resetPasswordSchema = z
+  .object({
+    password: z.string().min(8, 'Password must be at least 8 characters'),
+    confirmPassword: z.string(),
+  })
+  .refine(d => d.password === d.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -98,7 +102,7 @@ export type AuthResult = {
 export async function initiateRegistration(formData: FormData): Promise<AuthResult> {
   const turnstileToken = formData.get('cf-turnstile-response') as string | null;
   const isHuman = await verifyTurnstileToken(turnstileToken);
-  
+
   if (!isHuman) {
     return { success: false, error: 'Anti-spam check failed. Please verify you are a human.' };
   }
@@ -119,8 +123,8 @@ export async function initiateRegistration(formData: FormData): Promise<AuthResu
   const recentRequests = await prisma.verificationToken.count({
     where: {
       identifier: `register:${normalizedEmail}`,
-      expires: { gt: new Date() }
-    }
+      expires: { gt: new Date() },
+    },
   });
 
   if (recentRequests >= 2) {
@@ -128,7 +132,7 @@ export async function initiateRegistration(formData: FormData): Promise<AuthResu
   }
 
   // We deliberately do NOT delete old tokens. They accumulate to act as our rate limiter history!
-  
+
   const { raw, hash } = generateToken();
   const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
@@ -149,11 +153,7 @@ export async function initiateRegistration(formData: FormData): Promise<AuthResu
 /**
  * Step 2: Validates magic link token and creates the user.
  */
-export async function completeRegistration(
-  token: string,
-  email: string,
-  formData: FormData
-): Promise<AuthResult> {
+export async function completeRegistration(token: string, email: string, formData: FormData): Promise<AuthResult> {
   const tokenHash = hashToken(token);
 
   const verificationToken = await prisma.verificationToken.findUnique({
@@ -204,7 +204,7 @@ export async function completeRegistration(
       username: username.toLowerCase(),
       email: normalizedEmail,
       password: hashedPassword,
-      avatarColor: getRandomAvatarColor(),
+      avatarSeed: generate() as string,
     },
   });
 
@@ -264,7 +264,7 @@ export async function loginUser(formData: FormData): Promise<AuthResult> {
 export async function initiatePasswordReset(formData: FormData): Promise<AuthResult> {
   const turnstileToken = formData.get('cf-turnstile-response') as string | null;
   const isHuman = await verifyTurnstileToken(turnstileToken);
-  
+
   if (!isHuman) {
     return { success: false, error: 'Anti-spam check failed. Please verify you are a human.' };
   }
@@ -275,14 +275,14 @@ export async function initiatePasswordReset(formData: FormData): Promise<AuthRes
   }
 
   const normalizedEmail = parsed.data.email.toLowerCase();
-  
+
   // Rate Limiting Check for Password Reset (Even if user doesn't exist, we prevent spamming the endpoint)
   // Max 2 reset requests per email per hour.
   const recentRequests = await prisma.verificationToken.count({
     where: {
       identifier: `reset:${normalizedEmail}`,
-      expires: { gt: new Date() }
-    }
+      expires: { gt: new Date() },
+    },
   });
 
   if (recentRequests >= 2) {
@@ -294,7 +294,7 @@ export async function initiatePasswordReset(formData: FormData): Promise<AuthRes
 
   if (user) {
     // We deliberately do NOT delete old tokens. They accumulate to act as our rate limiter history!
-    
+
     const { raw, hash } = generateToken();
     const expires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
 
@@ -317,11 +317,7 @@ export async function initiatePasswordReset(formData: FormData): Promise<AuthRes
 /**
  * Validates reset token and updates the password.
  */
-export async function resetPassword(
-  token: string,
-  email: string,
-  formData: FormData
-): Promise<AuthResult> {
+export async function resetPassword(token: string, email: string, formData: FormData): Promise<AuthResult> {
   const tokenHash = hashToken(token);
 
   const verificationToken = await prisma.verificationToken.findUnique({

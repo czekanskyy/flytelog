@@ -14,13 +14,13 @@ const tabs = [
   { key: 'weather', href: '/plan/weather', icon: CloudSun },
 ] as const;
 
-export function FeatureTabs() {
+export function RouteBar() {
   const pathname = usePathname();
   const t = useTranslations('tabs');
 
   return (
-    <div className='sticky top-14 w-full h-14 bg-card border-b border-border shadow-sm flex items-center justify-center z-40'>
-      <div className='flex items-center gap-1 overflow-x-auto'>
+    <div className='sticky top-20 w-full lg:w-max mx-auto pb-2 px-4 lg:p-2 lg:shadow-lg items-center justify-center z-40 lg:rounded-full lg:bg-white lg:dark:bg-zinc-900 overflow-x-auto'>
+      <div className='flex items-center gap-1 lg:p-0 w-max'>
         {tabs.map(({ key, href, icon: Icon }) => {
           const isActive = pathname.startsWith(href);
 
@@ -28,14 +28,14 @@ export function FeatureTabs() {
             <Link
               key={key}
               href={href}
-              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-colors select-none whitespace-nowrap ${
+              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-colors select-none whitespace-nowrap shadow-md lg:shadow-none ${
                 isActive
-                  ? 'bg-sky-100 dark:bg-sky-500/15 text-sky-600 dark:text-sky-400'
-                  : 'text-slate-500 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-700 dark:hover:text-zinc-300'
+                  ? 'bg-sky-200 dark:bg-sky-700 text-sky-700 dark:text-sky-200'
+                  : 'bg-white dark:bg-zinc-900 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700 hover:text-zinc-700 dark:hover:text-zinc-200'
               }`}
             >
               <Icon className='h-4 w-4 shrink-0' />
-              <span className='hidden sm:inline'>{t(key)}</span>
+              <span className=''>{t(key)}</span>
             </Link>
           );
         })}
