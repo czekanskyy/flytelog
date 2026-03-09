@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { ShieldCheck, Settings, HelpCircle, Megaphone, LogOut } from 'lucide-react';
-import { useTranslations, useFormatter } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { UserAvatar } from '@/components/user-avatar';
 import { ThemeDropdown, LocaleDropdown } from '@/components/nav-dropdowns';
 import { Button } from '@/components/ui/button';
@@ -16,6 +16,14 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { signOut } from 'next-auth/react';
+import Image from 'next/image';
+import { Zilla_Slab } from 'next/font/google';
+
+const zillaSlab = Zilla_Slab({
+  weight: ['600', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 const GREETING_COUNT = 9;
 
@@ -26,14 +34,13 @@ type NavbarProps = {
     lastName: string;
     username: string;
     email: string;
-    avatarColor: string;
+    avatarSeed: string;
     role: string;
   };
 };
 
 export function Navbar({ user }: NavbarProps) {
   const t = useTranslations();
-  const format = useFormatter();
 
   // Deterministic "random" greeting based on user ID to prevent hydration mismatch
   const greetingIndex = user.id ? user.id.charCodeAt(user.id.length - 1) % GREETING_COUNT : 0;
@@ -48,12 +55,13 @@ export function Navbar({ user }: NavbarProps) {
   ];
 
   return (
-    <header className='sticky top-0 z-50 w-full'>
-      <div className='w-full max-w-none rounded-none border-b border-border bg-card'>
+    <header className='sticky top-4 z-50 w-full px-4'>
+      <div className='w-full bg-white dark:bg-zinc-900 rounded-full shadow-lg'>
         <div className='relative flex h-14 items-center justify-between px-4 lg:px-5'>
           {/* Left — logo */}
-          <Link href='/' className='text-lg font-bold tracking-tight text-sky-600 dark:text-sky-400 select-none shrink-0'>
-            flyteLog
+          <Link href='/' className='text-lg font-bold tracking-tight select-none shrink-0 flex items-center gap-2'>
+            <Image src='/logo.png' alt='Logo' width={32} height={32} />
+            <span className={`hidden sm:inline ${zillaSlab.className} text-sky-700 dark:text-sky-200`}>flyte</span>
           </Link>
 
           {/* Center — greeting */}
@@ -92,7 +100,7 @@ export function Navbar({ user }: NavbarProps) {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant='ghost' size='sm' className='h-9 w-9 px-0 ml-0.5 rounded-full' title={t('nav.account')}>
-                  <UserAvatar firstName={user.firstName} lastName={user.lastName} color={user.avatarColor} size='sm' />
+                  <UserAvatar firstName={user.firstName} lastName={user.lastName} seed={user.avatarSeed} size='sm' />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align='end' className='w-64 mt-2'>

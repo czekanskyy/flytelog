@@ -8,7 +8,7 @@ import { LocateFixed, Map, Globe, Triangle, SquareDot, TrafficCone, Locate, Plan
 import { renderToStaticMarkup } from 'react-dom/server';
 import { useTranslations } from 'next-intl';
 import { useRoute, type Waypoint } from '@/components/route/route-context';
-import type { LayerState } from '@/components/map-sidebar';
+import type { LayerState } from '@/components/route/sidebar';
 import type { WarningLevel } from '@/lib/navlog';
 import { computeNavlog, type NavlogEntry } from '@/lib/navlog';
 import { getTerrainProfile } from '@/lib/terrain';
@@ -754,7 +754,7 @@ export default function WorldMap({ airspaces = [], layers, airports, navaids, ob
       <div className='absolute bottom-6 right-4 z-400 flex flex-col gap-2'>
         <button
           onClick={() => setMapMode(mapMode === 'street' ? 'satellite' : 'street')}
-          className='flex h-12 w-12 items-center justify-center rounded-2xl bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md shadow-lg border border-slate-200/80 dark:border-zinc-800/80 text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800 transition-colors'
+          className='flex h-12 w-12 items-center justify-center rounded-full bg-white dark:bg-zinc-900 shadow-md hover:shadow-xl text-slate-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-950 transition-colors'
           title={tMap('toggleLayer')}
           aria-label={tMap('toggleLayer')}
         >
@@ -762,7 +762,7 @@ export default function WorldMap({ airspaces = [], layers, airports, navaids, ob
         </button>
         <button
           onClick={handleLocationClick}
-          className='flex h-12 w-12 items-center justify-center rounded-2xl bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md shadow-lg border border-slate-200/80 dark:border-zinc-800/80 text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800 transition-colors'
+          className='flex h-12 w-12 items-center justify-center rounded-full bg-white dark:bg-zinc-900 shadow-md hover:shadow-xl text-slate-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-950 transition-colors'
           title={tMap('myLocation')}
           aria-label={tMap('myLocation')}
         >

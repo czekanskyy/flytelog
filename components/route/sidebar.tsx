@@ -134,11 +134,11 @@ function formatAltFt(ft: number): string {
   return `FL${String(fl).padStart(3, '0')}`;
 }
 
-interface MapSidebarProps {
+interface SidebarProps {
   onLayerChange: (layers: LayerState) => void;
 }
 
-export function MapSidebar({ onLayerChange }: MapSidebarProps) {
+export function Sidebar({ onLayerChange }: SidebarProps) {
   const t = useTranslations('map');
   const [isExpanded, setIsExpanded] = useState(false);
   // Which accordion sections are open (multiple can be open simultaneously)
@@ -256,7 +256,7 @@ export function MapSidebar({ onLayerChange }: MapSidebarProps) {
       initial={{ width: 56 }}
       animate={{ width: isExpanded ? 380 : 56 }}
       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-      className='absolute top-0 left-0 z-40 h-full flex flex-col rounded-none shadow-md overflow-hidden select-none border-r border-border bg-card'
+      className='absolute top-0 left-0 z-40 h-full flex flex-col rounded-none shadow-md overflow-hidden select-none border-r border-border bg-card hidden'
     >
       {/* Icon strip — always visible */}
       <div className='flex flex-col shrink-0 py-2 gap-1'>
@@ -886,7 +886,7 @@ function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (v: b
 
 function ToggleRow({ icon: Icon, label, checked, onChange }: { icon: any; label: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
-    <div className='flex items-center justify-between rounded-lg bg-slate-50 dark:bg-zinc-800/70 px-2.5 py-2'>
+    <div className='flex items-center justify-between rounded-lg bg-slate-50 dark:bg-zinc-800/70 px-2.5 py-2 '>
       <div className='flex items-center gap-2'>
         <Icon className='h-3.5 w-3.5 text-slate-500 dark:text-zinc-400' />
         <span className='text-xs text-slate-700 dark:text-zinc-300'>{label}</span>

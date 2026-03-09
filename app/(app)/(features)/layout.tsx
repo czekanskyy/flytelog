@@ -1,9 +1,9 @@
-import { FeatureTabs } from '@/components/feature-tabs';
+import { RouteBar } from '@/components/routebar';
 
 export default function FeaturesLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <FeatureTabs />
+      <RouteBar />
       {children}
     </>
   );

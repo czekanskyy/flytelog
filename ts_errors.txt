@@ -1,0 +1,41 @@
+app/(app)/(features)/plan/route/page.tsx(56,9): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: WorldMapProps, context?: any): string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | ... 4 more ... | undefined', gave the following error.
+    Type 'AirportRecord[] | undefined' is not assignable to type 'ObjectRecord[] | undefined'.
+      Type 'AirportRecord[]' is not assignable to type 'ObjectRecord[]'.
+        Type 'AirportRecord' is not assignable to type 'ObjectRecord'.
+          Types of property 'frequencies' are incompatible.
+            Type 'unknown' is not assignable to type 'any[] | undefined'.
+  Overload 2 of 2, '(props: WorldMapProps): string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | ... 4 more ... | undefined', gave the following error.
+    Type 'AirportRecord[] | undefined' is not assignable to type 'ObjectRecord[] | undefined'.
+      Type 'AirportRecord[]' is not assignable to type 'ObjectRecord[]'.
+        Type 'AirportRecord' is not assignable to type 'ObjectRecord'.
+          Types of property 'frequencies' are incompatible.
+            Type 'unknown' is not assignable to type 'any[] | undefined'.
+app/admin/admin-user-nav.tsx(38,77): error TS2322: Type '{ firstName: string; lastName: string; color: string; size: "sm"; }' is not assignable to type 'IntrinsicAttributes & { firstName: string; lastName: string; seed: string; size?: "sm" | "md" | "lg" | undefined; }'.
+  Property 'color' does not exist on type 'IntrinsicAttributes & { firstName: string; lastName: string; seed: string; size?: "sm" | "md" | "lg" | undefined; }'.
+app/admin/approved-users-table.tsx(53,21): error TS2322: Type '{ firstName: string; lastName: string; color: string; size: "sm"; }' is not assignable to type 'IntrinsicAttributes & { firstName: string; lastName: string; seed: string; size?: "sm" | "md" | "lg" | undefined; }'.
+  Property 'color' does not exist on type 'IntrinsicAttributes & { firstName: string; lastName: string; seed: string; size?: "sm" | "md" | "lg" | undefined; }'.
+app/admin/layout.tsx(37,41): error TS2339: Property 'avatarColor' does not exist on type '{ id: string; role: "USER" | "ADMIN"; firstName: string; lastName: string; username: string; avatarSeed: string; email: string; } & User'.
+app/admin/page.tsx(32,23): error TS2322: Type '{ id: string; role: Role; email: string; firstName: string; lastName: string; username: string; avatarSeed: string; createdAt: Date; }[]' is not assignable to type 'User[]'.
+  Property 'avatarColor' is missing in type '{ id: string; role: Role; email: string; firstName: string; lastName: string; username: string; avatarSeed: string; createdAt: Date; }' but required in type 'User'.
+app/admin/pending-users-table.tsx(75,21): error TS2322: Type '{ firstName: string; lastName: string; color: string; size: "sm"; }' is not assignable to type 'IntrinsicAttributes & { firstName: string; lastName: string; seed: string; size?: "sm" | "md" | "lg" | undefined; }'.
+  Property 'color' does not exist on type 'IntrinsicAttributes & { firstName: string; lastName: string; seed: string; size?: "sm" | "md" | "lg" | undefined; }'.
+lib/auth.ts(8,3): error TS2322: Type 'import("C:/Users/Dominik/Dev/flytelog/node_modules/@auth/core/adapters").Adapter' is not assignable to type 'import("C:/Users/Dominik/Dev/flytelog/node_modules/next-auth/node_modules/@auth/core/adapters").Adapter'.
+  Types of property 'createUser' are incompatible.
+    Type '((user: import("C:/Users/Dominik/Dev/flytelog/node_modules/@auth/core/adapters").AdapterUser) => import("C:/Users/Dominik/Dev/flytelog/node_modules/@auth/core/types").Awaitable<import("C:/Users/Dominik/Dev/flytelog/node_modules/@auth/core/adapters").AdapterUser>) | undefined' is not assignable to type '((user: import("C:/Users/Dominik/Dev/flytelog/node_modules/next-auth/node_modules/@auth/core/adapters").AdapterUser) => import("C:/Users/Dominik/Dev/flytelog/node_modules/next-auth/node_modules/@auth/core/types").Awaitable<import("C:/Users/Dominik/Dev/flytelog/node_modules/next-auth/node_modules/@auth/core/adapters"...'.
+      Type '(user: import("C:/Users/Dominik/Dev/flytelog/node_modules/@auth/core/adapters").AdapterUser) => import("C:/Users/Dominik/Dev/flytelog/node_modules/@auth/core/types").Awaitable<import("C:/Users/Dominik/Dev/flytelog/node_modules/@auth/core/adapters").AdapterUser>' is not assignable to type '(user: import("C:/Users/Dominik/Dev/flytelog/node_modules/next-auth/node_modules/@auth/core/adapters").AdapterUser) => import("C:/Users/Dominik/Dev/flytelog/node_modules/next-auth/node_modules/@auth/core/types").Awaitable<import("C:/Users/Dominik/Dev/flytelog/node_modules/next-auth/node_modules/@auth/core/adapters")...'.
+        Type 'import("C:/Users/Dominik/Dev/flytelog/node_modules/@auth/core/types").Awaitable<import("C:/Users/Dominik/Dev/flytelog/node_modules/@auth/core/adapters").AdapterUser>' is not assignable to type 'import("C:/Users/Dominik/Dev/flytelog/node_modules/next-auth/node_modules/@auth/core/types").Awaitable<import("C:/Users/Dominik/Dev/flytelog/node_modules/next-auth/node_modules/@auth/core/adapters").AdapterUser>'.
+          Type 'AdapterUser' is not assignable to type 'Awaitable<AdapterUser>'.
+            Type 'AdapterUser' is missing the following properties from type 'AdapterUser': role, firstName, lastName, username, avatarSeed
+lib/auth.ts(19,13): error TS2322: Type '(credentials: Partial<Record<"login" | "password", unknown>>) => Promise<{ id: string; email: string; name: string; } | null>' is not assignable to type '(credentials: Partial<Record<"login" | "password", unknown>>, request: Request) => Awaitable<User | null>'.
+  Type 'Promise<{ id: string; email: string; name: string; } | null>' is not assignable to type 'Awaitable<User | null>'.
+    Type 'Promise<{ id: string; email: string; name: string; } | null>' is not assignable to type 'PromiseLike<User | null>'.
+      Types of property 'then' are incompatible.
+        Type '<TResult1 = { id: string; email: string; name: string; } | null, TResult2 = never>(onfulfilled?: ((value: { id: string; email: string; name: string; } | null) => TResult1 | PromiseLike<TResult1>) | null | undefined, onrejected?: ((reason: any) => TResult2 | PromiseLike<...>) | ... 1 more ... | undefined) => Promise<...' is not assignable to type '<TResult1 = User | null, TResult2 = never>(onfulfilled?: ((value: User | null) => TResult1 | PromiseLike<TResult1>) | null | undefined, onrejected?: ((reason: any) => TResult2 | PromiseLike<...>) | null | undefined) => PromiseLike<...>'.
+          Types of parameters 'onfulfilled' and 'onfulfilled' are incompatible.
+            Types of parameters 'value' and 'value' are incompatible.
+              Type '{ id: string; email: string; name: string; } | null' is not assignable to type 'User | null'.
+                Type '{ id: string; email: string; name: string; }' is missing the following properties from type 'User': role, firstName, lastName, username, avatarSeed
+lib/auth.ts(73,9): error TS2322: Type 'string' is not assignable to type '"USER" | "ADMIN"'.
+lib/ofp-calculations.ts(1,21): error TS7016: Could not find a declaration file for module 'suncalc'. 'C:/Users/Dominik/Dev/flytelog/node_modules/suncalc/suncalc.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/suncalc` if it exists or add a new declaration (.d.ts) file containing `declare module 'suncalc';`
