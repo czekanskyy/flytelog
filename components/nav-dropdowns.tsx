@@ -34,7 +34,7 @@ export function ThemeDropdown() {
         <Button
           variant='ghost'
           size='sm'
-          className='h-9 w-9 px-0 text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200'
+          className='h-9 w-9 px-0 text-zinc-700 dark:text-zinc-200 hover:text-zinc-800 dark:hover:text-zinc-100 hover:bg-zinc-200 dark:hover:bg-zinc-700'
           title={ti('theme')}
         >
           <SunMoon className='h-4.5 w-4.5' />
@@ -68,7 +68,7 @@ export function LocaleDropdown() {
         <Button
           variant='ghost'
           size='sm'
-          className='h-9 w-9 px-0 text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200'
+          className='h-9 w-9 px-0 text-zinc-700 dark:text-zinc-200 hover:text-zinc-800 dark:hover:text-zinc-100 hover:bg-zinc-200 dark:hover:bg-zinc-700'
           title={ti('language')}
         >
           <Languages className='h-4.5 w-4.5' />

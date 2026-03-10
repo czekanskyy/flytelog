@@ -29,7 +29,7 @@
       "invalidLink": "Link invalid or expired",
       "invalidLinkDesc": "This registration link is no longer valid. Please request a new one.",
       "requestNewLink": "Request new link",
-      
+
       "completeTitle": "Complete Registration",
       "completeSubtitle": "You're almost there! Finish setting up your account.",
       "firstNameLabel": "First Name",
@@ -225,6 +225,7 @@
     }
   },
   "map": {
+    "routeAndMapSettings": "Map and route settings",
     "settings": "Map settings",
     "layers": "Layers",
     "route": "Route",
@@ -248,6 +249,8 @@
     "asDeparture": "Departure",
     "asWaypoint": "Waypoint",
     "asDestination": "Destination",
+    "asAlt1": "Alternate 1",
+    "asAlt2": "Alternate 2",
     "nearbyPoints": "Nearby points",
     "noNearbyPoints": "No points found nearby",
     "departureAirport": "Departure",

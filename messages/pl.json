@@ -225,6 +225,7 @@
     }
   },
   "map": {
+    "routeAndMapSettings": "Ustawienia mapy i trasy",
     "settings": "Ustawienia mapy",
     "layers": "Warstwy",
     "route": "Trasa",
@@ -248,6 +249,8 @@
     "asDeparture": "Start",
     "asWaypoint": "Punkt",
     "asDestination": "Lądowanie",
+    "asAlt1": "Zapasowe 1",
+    "asAlt2": "Zapasowe 2",
     "nearbyPoints": "Pobliskie punkty",
     "noNearbyPoints": "Brak punktów w pobliżu",
     "departureAirport": "Lotnisko startu",
