@@ -1,0 +1,217 @@
+$ eslint
+
+C:\Users\Dominik\Dev\flytelog\app\(app)\(features)\plan\route\page.tsx
+  56:61  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\Dominik\Dev\flytelog\app\(app)\settings\email-form.tsx
+  32:11  warning  'email' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Dominik\Dev\flytelog\app\(app)\settings\profile-form.tsx
+  3:10  warning  'useState' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Dominik\Dev\flytelog\app\(app)\settings\security-form.tsx
+  3:10  warning  'useState' is defined but never used     @typescript-eslint/no-unused-vars
+  6:23  warning  'ShieldCheck' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Dominik\Dev\flytelog\app\(app)\settings\verify-email\page.tsx
+   7:46  warning  'Mail' is defined but never used             @typescript-eslint/no-unused-vars
+  12:3   warning  'CardDescription' is defined but never used  @typescript-eslint/no-unused-vars
+  14:3   warning  'CardHeader' is defined but never used       @typescript-eslint/no-unused-vars
+  15:3   warning  'CardTitle' is defined but never used        @typescript-eslint/no-unused-vars
+  50:9   warning  'router' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Dominik\Dev\flytelog\app\admin\layout.tsx
+  9:9  warning  't' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Dominik\Dev\flytelog\app\api\test-sync\route.ts
+   13:16  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   28:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  156:17  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\Dominik\Dev\flytelog\components\nav-dropdowns.tsx
+  29:19  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\Dominik\Dev\flytelog\components\nav-dropdowns.tsx:29:19
+  27 |   const [mounted, setMounted] = useState(false);
+  28 |
+> 29 |   useEffect(() => setMounted(true), []);
+     |                   ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  30 |
+  31 |   return (
+  32 |     <DropdownMenu>  react-hooks/set-state-in-effect
+
+C:\Users\Dominik\Dev\flytelog\components\ofp\ofp-context.tsx
+  22:8  warning  'WBResult' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Dominik\Dev\flytelog\components\ofp\sections\fuel-calc.tsx
+  5:23  warning  'OfpState' is defined but never used  @typescript-eslint/no-unused-vars
+  9:10  warning  'Label' is defined but never used     @typescript-eslint/no-unused-vars
+
+C:\Users\Dominik\Dev\flytelog\components\route\map-click-panel.tsx
+   60:5   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\Dominik\Dev\flytelog\components\route\map-click-panel.tsx:60:5
+  58 |     }
+  59 |
+> 60 |     setIsLoading(true);
+     |     ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  61 |     setCustomName('');
+  62 |     searchNearby(clickedPoint.lat, clickedPoint.lon, searchRadius).then(r => {
+  63 |       setResults(r);  react-hooks/set-state-in-effect
+  210:61  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  @typescript-eslint/no-explicit-any
+
+C:\Users\Dominik\Dev\flytelog\components\route\sidebar.tsx
+  522:4   error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  568:27  warning  '_' is defined but never used             @typescript-eslint/no-unused-vars
+  582:53  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  603:29  warning  '_' is defined but never used             @typescript-eslint/no-unused-vars
+  611:25  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  612:23  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  656:27  warning  '_' is defined but never used             @typescript-eslint/no-unused-vars
+  670:29  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  774:4   error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  906:70  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\Dominik\Dev\flytelog\components\theme-switcher.tsx
+  20:19  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\Dominik\Dev\flytelog\components\theme-switcher.tsx:20:19
+  18 |   const t = useTranslations("theme")
+  19 |
+> 20 |   useEffect(() => setMounted(true), [])
+     |                   ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  21 |
+  22 |   if (!mounted) {
+  23 |     return <div className="h-9 w-[108px]" />  react-hooks/set-state-in-effect
+
+C:\Users\Dominik\Dev\flytelog\components\worldmap.tsx
+   16:37   error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  124:13   error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  139:17   error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  140:13   error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  529:7    error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\Dominik\Dev\flytelog\components\worldmap.tsx:529:7
+  527 |   useEffect(() => {
+  528 |     if (waypoints.length < 2) {
+> 529 |       setNavlogEntries([]);
+      |       ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  530 |       return;
+  531 |     }
+  532 |     const compute = async () => {  react-hooks/set-state-in-effect
+  534:71   error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  628:36   error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  709:133  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  714:132  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  719:134  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  728:65   error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+
+C:\Users\Dominik\Dev\flytelog\hooks\use-aero-data.ts
+  165:21   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  166:18   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  187:207  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  207:109  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  218:180  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  236:90   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  246:91   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  371:25   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  374:25   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  383:25   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  389:25   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  392:25   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  398:25   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  401:25   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\Dominik\Dev\flytelog\lib\auth.ts
+  8:37  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\Dominik\Dev\flytelog\lib\navlog.ts
+  34:13  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\Dominik\Dev\flytelog\lib\settings-actions.ts
+  45:11  warning  'updatedUser' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Dominik\Dev\flytelog\public\sw.js
+  1:7   warning  'CACHE_NAME' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  3:34  warning  'event' is defined but never used                @typescript-eslint/no-unused-vars
+
+C:\Users\Dominik\Dev\flytelog\scripts\check-airspace-names.js
+  1:20  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:1   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+C:\Users\Dominik\Dev\flytelog\scripts\check-airspace-types.js
+  1:20  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:1   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+C:\Users\Dominik\Dev\flytelog\scripts\check-counts.js
+  1:20  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:1   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+C:\Users\Dominik\Dev\flytelog\scripts\check-db.js
+  1:20  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:1   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+C:\Users\Dominik\Dev\flytelog\scripts\seed-mock.js
+  1:26  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+C:\Users\Dominik\Dev\flytelog\scripts\seed-pg.js
+    1:20  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+    2:15  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+    3:1   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   58:11  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   86:11  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  114:11  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  142:11  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  169:11  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+C:\Users\Dominik\Dev\flytelog\scripts\sync-node.js
+  8:18  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  9:33  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+C:\Users\Dominik\Dev\flytelog\scripts\sync-node.ts
+   20:16  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   38:26  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  164:17  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\Dominik\Dev\flytelog\scripts\sync-openaip.ts
+   18:16  error  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+  103:11  error  'poly' is never reassigned. Use 'const' instead  prefer-const
+  123:26  error  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+
+C:\Users\Dominik\Dev\flytelog\scripts\sync-prod.js
+  1:26  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:15  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:1   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+C:\Users\Dominik\Dev\flytelog\scripts\test-obstacle.js
+  1:20  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:1   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+Ôťľ 91 problems (72 errors, 19 warnings)
+  1 error and 0 warnings potentially fixable with the `--fix` option.
+
+error: script "lint" exited with code 1

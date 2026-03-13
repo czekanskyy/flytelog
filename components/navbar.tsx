@@ -56,8 +56,8 @@ export function Navbar({ user }: NavbarProps) {
 
   return (
     <header className='sticky top-4 z-50 w-full px-4'>
-      <div className='w-full bg-white dark:bg-zinc-900 rounded-full shadow-lg'>
-        <div className='relative flex h-14 items-center justify-between px-4 lg:px-5'>
+      <div className='w-full bg-white dark:bg-zinc-900 rounded-xl shadow-lg'>
+        <div className='relative flex items-center justify-between p-2'>
           {/* Left — logo */}
           <Link href='/' className='text-lg font-bold tracking-tight select-none shrink-0 flex items-center gap-2'>
             <Image src='/logo.png' alt='Logo' width={32} height={32} />
@@ -66,7 +66,7 @@ export function Navbar({ user }: NavbarProps) {
 
           {/* Center — greeting */}
           <div className='absolute inset-x-0 hidden md:flex justify-center pointer-events-none px-48'>
-            <p className='text-sm text-slate-500 dark:text-zinc-400 truncate'>{t(`greetings.${greetingIndex}`, { name: user.firstName })}</p>
+            <p className='text-sm text-zinc-700 dark:text-zinc-200 truncate'>{t(`greetings.${greetingIndex}`, { name: user.firstName })}</p>
           </div>
 
           {/* Right — actions */}
@@ -75,7 +75,7 @@ export function Navbar({ user }: NavbarProps) {
             <ThemeDropdown />
             <LocaleDropdown />
 
-            <div className='w-px h-5 rounded-full border border-slate-500 dark:border-zinc-400 mx-2' />
+            <div className='w-px h-5 rounded-2xl border border-slate-500 dark:border-zinc-400 mx-2' />
 
             {navLinks.map(({ icon: Icon, label, href }) => (
               <Tooltip key={href}>
@@ -84,7 +84,7 @@ export function Navbar({ user }: NavbarProps) {
                     variant='ghost'
                     size='sm'
                     asChild
-                    className='h-9 w-9 px-0 text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200 hidden sm:inline-flex'
+                    className='h-9 w-9 px-0 text-zinc-700 dark:text-zinc-200 hover:text-zinc-800 dark:hover:text-zinc-100 hidden sm:inline-flex hover:bg-zinc-200 dark:hover:bg-zinc-700'
                   >
                     <Link href={href}>
                       <Icon className='h-4.5 w-4.5' />
@@ -99,7 +99,7 @@ export function Navbar({ user }: NavbarProps) {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant='ghost' size='sm' className='h-9 w-9 px-0 ml-0.5 rounded-full' title={t('nav.account')}>
+                <Button variant='ghost' size='sm' className='h-9 w-9 px-0 ml-0.5 rounded-lg' title={t('nav.account')}>
                   <UserAvatar firstName={user.firstName} lastName={user.lastName} seed={user.avatarSeed} size='sm' />
                 </Button>
               </DropdownMenuTrigger>

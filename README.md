@@ -26,9 +26,9 @@ Whether you're a student pilot tracking your first hours, or an experienced avia
 
 ## 📋 Roadmap
 
-- [ ] Authentication system with email confirmation
+- [x] Authentication system with email confirmation
 - [ ] Admin dashboard
-- [ ] Main menu with feature navigation
+- [x] Main menu with feature navigation
 - [ ] EASA-compliant logbook for aeroplanes, gliders, and simulators
 - [ ] Route planning with VFR waypoint search (IFR in the future), place name lookup, and map integration
 - [ ] Operational Flight Plan generation with performance calculations

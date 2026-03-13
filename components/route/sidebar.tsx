@@ -1,18 +1,17 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ChevronDown,
   ChevronLeft,
+  ChevronRight,
   Download,
   X,
   AlertTriangle,
   Minus,
   Search,
   GripVertical,
-  PlaneTakeoff,
-  PlaneLanding,
   Plus,
   Layers,
   Mountain,
@@ -21,8 +20,10 @@ import {
   TrafficCone,
   SquareDot,
   Triangle,
-  Radio,
-  Flag,
+  Settings,
+  Spline,
+  PlaneTakeoff,
+  PlaneLanding,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTranslations } from 'next-intl';
@@ -254,135 +255,155 @@ export function Sidebar({ onLayerChange }: SidebarProps) {
   return (
     <motion.div
       initial={{ width: 56 }}
-      animate={{ width: isExpanded ? 380 : 56 }}
+      animate={{ width: isExpanded ? 'auto' : 56 }}
       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-      className='absolute top-0 left-0 z-40 h-full flex flex-col rounded-none shadow-md overflow-hidden select-none border-r border-border bg-card hidden'
+      className='hidden md:flex absolute top-36 left-4 bottom-4 z-40 flex-col rounded-xl shadow-md select-none bg-white dark:bg-zinc-900 overflow-hidden'
     >
-      {/* Icon strip — always visible */}
-      <div className='flex flex-col shrink-0 py-2 gap-1'>
-        <div className='h-28 shrink-0' /> {/* Spacer for navbar & tabs */}
-        <SidebarIconButton
-          icon={PlaneTakeoff}
-          active={isExpanded && openSections.has('route')}
-          label={t('route')}
-          isExpanded={isExpanded}
-          onClick={() => {
-            if (!isExpanded) {
-              setIsExpanded(true);
-              setOpenSections(new Set(['route']));
-            } else toggleSection('route');
-          }}
-        />
-        <SidebarIconButton
-          icon={Layers}
-          active={isExpanded && openSections.has('layers')}
-          label={t('layers')}
-          isExpanded={isExpanded}
-          onClick={() => {
-            if (!isExpanded) {
-              setIsExpanded(true);
-              setOpenSections(new Set(['layers']));
-            } else toggleSection('layers');
-          }}
-        />
-        {isExpanded && (
-          <button
-            onClick={() => setIsExpanded(false)}
-            className='flex h-10 w-10 items-center justify-center self-end mr-1 text-slate-400 hover:text-slate-600 dark:hover:text-zinc-300 transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-zinc-800'
+      {/* 
+        Tryb zwinięty (Pasek Samych Ikon) 
+      */}
+      <AnimatePresence mode='wait'>
+        {!isExpanded && (
+          <motion.div
+            key='icon-strip'
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.15 }}
+            className='flex flex-col w-14 shrink-0 p-2 items-center gap-2'
           >
-            <ChevronLeft className='h-4 w-4' />
-          </button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => setIsExpanded(true)}
+                  className='flex h-10 w-10 items-center justify-center rounded-lg transition-colors text-zinc-700 hover:bg-zinc-200 hover:text-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700 dark:hover:text-zinc-100'
+                >
+                  <ChevronRight className='h-5 w-5' />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side='right'>
+                <p>{t('routeAndMapSettings', { defaultMessage: 'Map and route settings' })}</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <div className='w-8 h-px bg-zinc-200/50 dark:bg-zinc-700/50 shrink-0' />
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => {
+                    setIsExpanded(true);
+                    setOpenSections(new Set(['route']));
+                  }}
+                  className={`flex h-10 w-10 items-center justify-center rounded-lg transition-colors ${openSections.has('route') ? 'bg-sky-100 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200'}`}
+                >
+                  <Spline className='h-5 w-5' />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side='right'>
+                <p>{t('route')}</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => {
+                    setIsExpanded(true);
+                    setOpenSections(new Set(['layers']));
+                  }}
+                  className={`flex h-10 w-10 items-center justify-center rounded-lg transition-colors ${openSections.has('layers') ? 'bg-sky-100 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200'}`}
+                >
+                  <Layers className='h-5 w-5' />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side='right'>
+                <p>{t('layers')}</p>
+              </TooltipContent>
+            </Tooltip>
+          </motion.div>
         )}
-      </div>
 
-      <div className='mx-3 h-px bg-slate-200/80 dark:bg-zinc-700/80 shrink-0' />
+        {/* 
+          Tryb rozwinięty (Panel Boczny) 
+        */}
+        {isExpanded && (
+          <motion.div
+            key='expanded-panel'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className='flex flex-col flex-1 min-w-0 w-72 lg:w-96'
+          >
+            {/* Nagłówek (Header) wpisujący do map-click-panel */}
+            <div className='flex items-center justify-between py-2 px-3 lg:py-3 lg:px-4 sticky left-0 top-0 shrink-0 bg-white dark:bg-zinc-900 z-50'>
+              <div className='flex items-center gap-2'>
+                <Settings className='h-4 w-4 lg:h-5 lg:w-5 text-sky-500' />
+                <span className='font-semibold text-xs lg:text-sm text-zinc-700 dark:text-zinc-200 tracking-wider'>
+                  {t('routeAndMapSettings', { defaultMessage: 'Map and route settings' })}
+                </span>
+              </div>
+              <button
+                onClick={() => {
+                  setIsExpanded(false);
+                  setOpenSections(new Set());
+                }}
+                className='flex h-6 w-6 lg:h-8 lg:w-8 items-center justify-center rounded-md hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors'
+              >
+                <ChevronLeft className='h-4 w-4 text-slate-500' />
+              </button>
+            </div>
 
-      {/* Accordion content */}
-      {isExpanded && (
-        <div className='flex-1 overflow-y-auto px-3 py-2 flex flex-col gap-0'>
-          <AccordionSection id='route' icon={PlaneTakeoff} title={t('route')} isOpen={openSections.has('route')} onToggle={toggleSection}>
-            <RouteTab
-              departure={departure}
-              destination={destination}
-              waypoints={waypoints}
-              legs={legs}
-              navlogEntries={navlogEntries}
-              terrainProfile={terrainProfile}
-              totalDistance={totalDistance}
-              searchQuery={searchQuery}
-              searchResults={searchResults}
-              showEnrouteSearch={showEnrouteSearch}
-              dragIndex={dragIndex}
-              onSearchChange={setSearchQuery}
-              onSearchSelect={handleSearchSelect}
-              onToggleEnrouteSearch={() => setShowEnrouteSearch(!showEnrouteSearch)}
-              onRemoveWaypoint={removeWaypoint}
-              onSetLegAltitude={setLegAltitude}
-              onClearRoute={clearRoute}
-              onDragStart={handleDragStart}
-              onDragOver={handleDragOver}
-              onDragEnd={handleDragEnd}
-              t={t}
-            />
-          </AccordionSection>
+            <div className='h-px bg-zinc-200/50 dark:bg-zinc-700/50' />
 
-          <AccordionSection id='layers' icon={Layers} title={t('layers')} isOpen={openSections.has('layers')} onToggle={toggleSection}>
-            <LayersTab
-              layers={layers}
-              onToggleAirspaceType={toggleAirspaceType}
-              onUpdateLayer={updateLayer}
-              isOffline={isOffline}
-              isDownloading={isDownloading}
-              onDownload={downloadForOffline}
-              lastDownloadDate={lastDownloadDate}
-              isSyncingAup={isSyncingAup}
-              aupLastSync={aupLastSync}
-              onAupSync={handleAupSync}
-              t={t}
-            />
-          </AccordionSection>
-        </div>
-      )}
+            <div className='flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-3'>
+              <AccordionSection id='route' icon={Spline} title={t('route')} isOpen={openSections.has('route')} onToggle={toggleSection}>
+                <RouteTab
+                  departure={departure}
+                  destination={destination}
+                  waypoints={waypoints}
+                  legs={legs}
+                  navlogEntries={navlogEntries}
+                  terrainProfile={terrainProfile}
+                  totalDistance={totalDistance}
+                  searchQuery={searchQuery}
+                  searchResults={searchResults}
+                  showEnrouteSearch={showEnrouteSearch}
+                  dragIndex={dragIndex}
+                  onSearchChange={setSearchQuery}
+                  onSearchSelect={handleSearchSelect}
+                  onToggleEnrouteSearch={() => setShowEnrouteSearch(!showEnrouteSearch)}
+                  onRemoveWaypoint={removeWaypoint}
+                  onSetLegAltitude={setLegAltitude}
+                  onClearRoute={clearRoute}
+                  onDragStart={handleDragStart}
+                  onDragOver={handleDragOver}
+                  onDragEnd={handleDragEnd}
+                  t={t}
+                />
+              </AccordionSection>
+
+              <AccordionSection id='layers' icon={Layers} title={t('layers')} isOpen={openSections.has('layers')} onToggle={toggleSection}>
+                <LayersTab
+                  layers={layers}
+                  onToggleAirspaceType={toggleAirspaceType}
+                  onUpdateLayer={updateLayer}
+                  isOffline={isOffline}
+                  isDownloading={isDownloading}
+                  onDownload={downloadForOffline}
+                  lastDownloadDate={lastDownloadDate}
+                  isSyncingAup={isSyncingAup}
+                  aupLastSync={aupLastSync}
+                  onAupSync={handleAupSync}
+                  t={t}
+                />
+              </AccordionSection>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
-  );
-}
-
-function SidebarIconButton({
-  icon: Icon,
-  active,
-  label,
-  isExpanded,
-  onClick,
-}: {
-  icon: React.ElementType;
-  active: boolean;
-  label: string;
-  isExpanded: boolean;
-  onClick: () => void;
-}) {
-  const content = (
-    <button
-      onClick={onClick}
-      className={`flex items-center gap-2 mx-2 px-2 h-10 rounded-xl text-sm font-medium transition-colors ${
-        active
-          ? 'bg-sky-100 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400'
-          : 'text-slate-500 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-700 dark:hover:text-zinc-200'
-      } ${isExpanded ? 'w-auto' : 'w-10 justify-center'}`}
-    >
-      <Icon className='h-4 w-4 shrink-0' />
-      {isExpanded && <span className='text-xs truncate'>{label}</span>}
-    </button>
-  );
-
-  if (isExpanded) return content;
-
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>{content}</TooltipTrigger>
-      <TooltipContent side='right'>
-        <p>{label}</p>
-      </TooltipContent>
-    </Tooltip>
   );
 }
 
@@ -406,7 +427,7 @@ function AccordionSection({
       <button onClick={() => onToggle(id)} className='flex items-center justify-between w-full py-2.5 text-left group'>
         <div className='flex items-center gap-2'>
           <Icon className='h-3.5 w-3.5 text-slate-500 dark:text-zinc-400 shrink-0' />
-          <span className='text-xs font-semibold text-slate-600 dark:text-zinc-300 uppercase tracking-wider'>{title}</span>
+          <span className='text-xs lg:text-sm font-semibold text-slate-600 dark:text-zinc-300 uppercase tracking-wider'>{title}</span>
         </div>
         <ChevronDown className={`h-3.5 w-3.5 text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
@@ -697,7 +718,7 @@ function RouteTab({
               </tbody>
             </table>
           </div>
-          <p className='mt-1 text-[10px] text-slate-400 dark:text-zinc-500'>
+          <p className='mt-1 text-[11px] text-slate-400 dark:text-zinc-500'>
             {t('totalDistance')}: {totalDistance.toFixed(1)} NM
           </p>
         </div>
@@ -877,19 +898,19 @@ function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (v: b
   return (
     <button
       onClick={() => onChange(!checked)}
-      className={`relative w-9 h-5 rounded-full transition-colors ${checked ? 'bg-sky-500' : 'bg-slate-300 dark:bg-zinc-600'}`}
+      className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${checked ? 'bg-sky-500' : 'bg-slate-200 dark:bg-zinc-700'}`}
     >
-      <div className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${checked ? 'translate-x-4' : ''}`} />
+      <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${checked ? 'translate-x-[14px]' : 'translate-x-0.5'}`} />
     </button>
   );
 }
 
 function ToggleRow({ icon: Icon, label, checked, onChange }: { icon: any; label: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
-    <div className='flex items-center justify-between rounded-lg bg-slate-50 dark:bg-zinc-800/70 px-2.5 py-2 '>
+    <div className='flex items-center justify-between py-1.5'>
       <div className='flex items-center gap-2'>
-        <Icon className='h-3.5 w-3.5 text-slate-500 dark:text-zinc-400' />
-        <span className='text-xs text-slate-700 dark:text-zinc-300'>{label}</span>
+        <Icon className='h-3.5 w-3.5 text-slate-400 dark:text-zinc-500' />
+        <span className='text-xs text-slate-600 dark:text-zinc-300'>{label}</span>
       </div>
       <ToggleSwitch checked={checked} onChange={onChange} />
     </div>

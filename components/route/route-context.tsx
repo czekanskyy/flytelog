@@ -149,7 +149,7 @@ export function RouteProvider({ children }: { children: ReactNode }) {
         return next;
       });
     },
-    [legs]
+    [legs],
   );
 
   const clearRoute = useCallback(() => {
@@ -190,13 +190,18 @@ export function useRoute() {
 export function toFplCoords(lat: number, lon: number): string {
   const latDir = lat >= 0 ? 'N' : 'S';
   const lonDir = lon >= 0 ? 'E' : 'W';
-  const absLat = Math.abs(lat);
-  const absLon = Math.abs(lon);
-  const latDeg = Math.floor(absLat);
-  const latMin = (absLat - latDeg) * 60;
-  const lonDeg = Math.floor(absLon);
-  const lonMin = (absLon - lonDeg) * 60;
-  return `${String(latDeg).padStart(2, '0')}${latMin.toFixed(2).padStart(5, '0')}${latDir}/${String(lonDeg).padStart(3, '0')}${lonMin
-    .toFixed(2)
-    .padStart(5, '0')}${lonDir}`;
+
+  const totalLatSec = Math.round(Math.abs(lat) * 3600);
+  const latDeg = Math.floor(totalLatSec / 3600);
+  const latMin = Math.floor((totalLatSec % 3600) / 60);
+  const latSec = totalLatSec % 60;
+
+  const totalLonSec = Math.round(Math.abs(lon) * 3600);
+  const lonDeg = Math.floor(totalLonSec / 3600);
+  const lonMin = Math.floor((totalLonSec % 3600) / 60);
+  const lonSec = totalLonSec % 60;
+
+  const pad = (num: number, len: number) => String(num).padStart(len, '0');
+
+  return `${pad(latDeg, 2)}${pad(latMin, 2)}${pad(latSec, 2)}${latDir}${pad(lonDeg, 3)}${pad(lonMin, 2)}${pad(lonSec, 2)}${lonDir}`;
 }
